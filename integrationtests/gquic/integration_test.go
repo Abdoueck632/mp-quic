@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/lucas-clemente/quic-go/integrationtests/tools/testserver"
-	"github.com/lucas-clemente/quic-go/internal/protocol"
+	"github.com/Abdoueck632/mp-quic/integrationtests/tools/testserver"
+	"github.com/Abdoueck632/mp-quic/internal/protocol"
 
 	_ "github.com/lucas-clemente/quic-clients" // download clients
 

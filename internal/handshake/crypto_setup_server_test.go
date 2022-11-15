@@ -6,10 +6,10 @@ import (
 	"errors"
 	"net"
 
-	"github.com/lucas-clemente/quic-go/internal/crypto"
-	"github.com/lucas-clemente/quic-go/internal/protocol"
-	"github.com/lucas-clemente/quic-go/internal/utils"
-	"github.com/lucas-clemente/quic-go/qerr"
+	"github.com/Abdoueck632/mp-quic/internal/crypto"
+	"github.com/Abdoueck632/mp-quic/internal/protocol"
+	"github.com/Abdoueck632/mp-quic/internal/utils"
+	"github.com/Abdoueck632/mp-quic/qerr"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

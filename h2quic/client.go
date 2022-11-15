@@ -14,10 +14,10 @@ import (
 	"golang.org/x/net/http2/hpack"
 	"golang.org/x/net/idna"
 
-	quic "github.com/lucas-clemente/quic-go"
-	"github.com/lucas-clemente/quic-go/internal/protocol"
-	"github.com/lucas-clemente/quic-go/internal/utils"
-	"github.com/lucas-clemente/quic-go/qerr"
+	quic "github.com/Abdoueck632/mp-quic"
+	"github.com/Abdoueck632/mp-quic/internal/protocol"
+	"github.com/Abdoueck632/mp-quic/internal/utils"
+	"github.com/Abdoueck632/mp-quic/qerr"
 )
 
 type roundTripperOpts struct {

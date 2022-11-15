@@ -6,13 +6,13 @@ import (
 	"net"
 	"time"
 
-	quic "github.com/lucas-clemente/quic-go"
-	"github.com/lucas-clemente/quic-go/integrationtests/tools/proxy"
-	"github.com/lucas-clemente/quic-go/internal/protocol"
-	"github.com/lucas-clemente/quic-go/internal/utils"
-	"github.com/lucas-clemente/quic-go/qerr"
+	quic "github.com/Abdoueck632/mp-quic"
+	"github.com/Abdoueck632/mp-quic/integrationtests/tools/proxy"
+	"github.com/Abdoueck632/mp-quic/internal/protocol"
+	"github.com/Abdoueck632/mp-quic/internal/utils"
+	"github.com/Abdoueck632/mp-quic/qerr"
 
-	"github.com/lucas-clemente/quic-go/internal/testdata"
+	"github.com/Abdoueck632/mp-quic/internal/testdata"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

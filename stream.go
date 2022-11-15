@@ -8,10 +8,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lucas-clemente/quic-go/internal/flowcontrol"
-	"github.com/lucas-clemente/quic-go/internal/protocol"
-	"github.com/lucas-clemente/quic-go/internal/utils"
-	"github.com/lucas-clemente/quic-go/internal/wire"
+	"github.com/Abdoueck632/mp-quic/internal/flowcontrol"
+	"github.com/Abdoueck632/mp-quic/internal/protocol"
+	"github.com/Abdoueck632/mp-quic/internal/utils"
+	"github.com/Abdoueck632/mp-quic/internal/wire"
 )
 
 // A Stream assembles the data from StreamFrames and provides a super-convenient Read-Interface

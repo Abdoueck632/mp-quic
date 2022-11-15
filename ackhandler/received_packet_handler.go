@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/lucas-clemente/quic-go/internal/protocol"
-	"github.com/lucas-clemente/quic-go/internal/wire"
+	"github.com/Abdoueck632/mp-quic/internal/protocol"
+	"github.com/Abdoueck632/mp-quic/internal/wire"
 )
 
 var errInvalidPacketNumber = errors.New("ReceivedPacketHandler: Invalid packet number")
