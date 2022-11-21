@@ -3,7 +3,7 @@ package crypto
 import (
 	"bytes"
 
-	"github.com/Abdoueck632/mp-quic-certificates"
+	"github.com/lucas-clemente/quic-go-certificates"
 )
 
 type certSet [][]byte

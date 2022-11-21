@@ -1,8 +1,8 @@
 package crypto
 
 import (
-	"github.com/bifurcation/mint"
 	"github.com/Abdoueck632/mp-quic/internal/protocol"
+	"github.com/bifurcation/mint"
 )
 
 const (
