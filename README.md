@@ -23,11 +23,11 @@ We currently support Go 1.9+.
 At first installing et updating some specific dependencies:
 
     go get github.com/bifurcation/mint@a6080d464fb57a9330c2124ffb62f3c233e3400e
-		go get github.com/bifurcation/mint@a6080d464fb57a9330c2124ffb62f3c233e3400e
-
+		
+	go get github.com/hashicorp/golang-lru@7f827b33c0f158ec5dfbba01bb0b14a4541fd81d
 Installing and updating other dependencies:
 
-		go get -t -u ./...
+	go get -t -u ./...
 
 Running tests:
 
