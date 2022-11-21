@@ -20,9 +20,14 @@ As Google's QUIC versions are expected to converge towards the [IETF QUIC draft]
 
 We currently support Go 1.9+.
 
-Installing and updating dependencies:
+At first installing et updating some specific dependencies:
 
-    go get -t -u ./...
+    go get github.com/bifurcation/mint@a6080d464fb57a9330c2124ffb62f3c233e3400e
+		go get github.com/bifurcation/mint@a6080d464fb57a9330c2124ffb62f3c233e3400e
+
+Installing and updating other dependencies:
+
+		go get -t -u ./...
 
 Running tests:
 
