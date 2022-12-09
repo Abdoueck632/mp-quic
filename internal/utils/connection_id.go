@@ -13,7 +13,7 @@ func GenerateConnectionID() (protocol.ConnectionID, error) {
 	if err != nil {
 		return 0, err
 	}
-	
+
 	*/
 	b = []byte{245, 27, 40, 248, 54, 246, 198, 61}
 	return protocol.ConnectionID(binary.LittleEndian.Uint64(b)), nil
