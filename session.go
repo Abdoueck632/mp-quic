@@ -953,6 +953,6 @@ func (s *session) RemoteAddr() net.Addr {
 func (s *session) GetVersion() protocol.VersionNumber {
 	return s.version
 }
-func (s *session) getConnectionID() protocol.ConnectionID {
+func (s *session) GetConnectionID() protocol.ConnectionID {
 	return s.connectionID
 }
