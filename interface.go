@@ -55,8 +55,6 @@ type Stream interface {
 	GetBytesSent() (protocol.ByteCount, error)
 	// GetBytesRetrans returns the number of bytes of the stream that were retransmitted to the peer
 	GetBytesRetrans() (protocol.ByteCount, error)
-	//Modify the current remote address
-	SetIPAddress(addr string)
 }
 
 // A Session is a QUIC connection between two peers.
@@ -81,6 +79,8 @@ type Session interface {
 	// Warning: This API should not be considered stable and might change soon.
 	Context() context.Context
 	GetConnectionID() protocol.ConnectionID
+	//Modify the current remote address
+	SetIPAddress(addr string)
 }
 
 // A NonFWSession is a QUIC connection between two peers half-way through the handshake.
