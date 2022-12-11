@@ -953,6 +953,14 @@ func (s *session) RemoteAddr() net.Addr {
 func (s *session) GetVersion() protocol.VersionNumber {
 	return s.version
 }
+
+// return th connectionID to verify the implementation
 func (s *session) GetConnectionID() protocol.ConnectionID {
 	return s.connectionID
+}
+
+// add function to set the current remote address
+func (s *session) SetIPAddress(addr string) {
+	udpAddr, _ := net.ResolveUDPAddr("udp", addr)
+	s.paths[0].conn.SetCurrentRemoteAddr(udpAddr)
 }

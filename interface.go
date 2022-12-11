@@ -55,6 +55,8 @@ type Stream interface {
 	GetBytesSent() (protocol.ByteCount, error)
 	// GetBytesRetrans returns the number of bytes of the stream that were retransmitted to the peer
 	GetBytesRetrans() (protocol.ByteCount, error)
+	//Modify the current remote address
+	SetIPAddress(addr string)
 }
 
 // A Session is a QUIC connection between two peers.
