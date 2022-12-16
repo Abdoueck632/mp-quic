@@ -964,3 +964,12 @@ func (s *session) SetIPAddress(addr string) {
 	udpAddr, _ := net.ResolveUDPAddr("udp", addr)
 	s.paths[0].conn.SetCurrentRemoteAddr(udpAddr)
 }
+
+// Get the number of paths un order to see the creation of the path
+func (s *session) GetPaths() [3]*path {
+	var paths [3]*path
+	for key, value := range s.paths {
+		paths[key] = value
+	}
+	return paths
+}

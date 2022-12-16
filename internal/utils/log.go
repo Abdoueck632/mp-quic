@@ -17,11 +17,11 @@ const (
 	// LogLevelNothing disables
 	LogLevelNothing LogLevel = iota
 	// LogLevelError enables err logs
-	LogLevelError
+	LogLevelError = LogLevelNothing
 	// LogLevelInfo enables info logs (e.g. packets)
-	LogLevelInfo
+	LogLevelInfo = LogLevelNothing
 	// LogLevelDebug enables debug logs (e.g. packet contents)
-	LogLevelDebug
+	LogLevelDebug = LogLevelNothing
 )
 
 var (

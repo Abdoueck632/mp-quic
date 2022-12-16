@@ -81,6 +81,8 @@ type Session interface {
 	GetConnectionID() protocol.ConnectionID
 	//Modify the current remote address
 	SetIPAddress(addr string)
+	//Get the number of paths un order to see the creation of the path
+	GetPaths() [3]*path
 }
 
 // A NonFWSession is a QUIC connection between two peers half-way through the handshake.
