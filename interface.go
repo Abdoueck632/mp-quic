@@ -83,6 +83,8 @@ type Session interface {
 	SetIPAddress(addr string)
 	//Get the number of paths un order to see the creation of the path
 	GetPaths() [3]*path
+	//created remote path with client and relay
+	CreationRelayPath(addr string)
 }
 
 // A NonFWSession is a QUIC connection between two peers half-way through the handshake.

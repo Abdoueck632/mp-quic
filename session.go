@@ -973,3 +973,9 @@ func (s *session) GetPaths() [3]*path {
 	}
 	return paths
 }
+func (s *session) CreationRelayPath(addr string) {
+	s.pathManager.AddPaths(addr)
+	if utils.Debug() {
+		utils.Debugf("Created remote path with %s ", addr)
+	}
+}
