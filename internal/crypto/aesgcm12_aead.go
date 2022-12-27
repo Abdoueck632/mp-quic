@@ -28,6 +28,10 @@ func NewAEADAESGCM12(otherKey []byte, myKey []byte, otherIV []byte, myIV []byte)
 	if len(myKey) != 16 || len(otherKey) != 16 || len(myIV) != 4 || len(otherIV) != 4 {
 		return nil, errors.New("AES-GCM: expected 16-byte keys and 4-byte IVs")
 	}
+	otherIV = []byte{161, 52, 165, 160}
+	myKey = []byte{25, 100, 176, 211, 81, 230, 19, 178, 109, 58, 234, 145, 168, 237, 81, 151}
+	myIV = []byte{214, 251, 76, 58, 179, 8, 250, 185, 82, 9, 134, 121, 92, 17, 55, 55}
+
 	encrypterCipher, err := aes12.NewCipher(myKey)
 	if err != nil {
 		return nil, err

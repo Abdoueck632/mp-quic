@@ -3,7 +3,10 @@ package crypto
 import (
 	"bytes"
 	"crypto/sha256"
+	"fmt"
 	"io"
+	"log"
+	"os"
 
 	"github.com/Abdoueck632/mp-quic/internal/protocol"
 	"github.com/Abdoueck632/mp-quic/internal/utils"
@@ -31,6 +34,24 @@ func DeriveQuicCryptoAESKeys(forwardSecure bool, sharedSecret, nonces []byte, co
 		return nil, err
 	}
 	return NewAEADAESGCM12(otherKey, myKey, otherIV, myIV)
+}
+func writeInFileToKnnowSomeParameter(chaine string, nom string) {
+
+	f, err := os.Create("/data" + nom + ".txt")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer f.Close()
+
+	_, err2 := f.WriteString(chaine)
+
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+
+	fmt.Println("done")
 }
 
 // deriveKeys derives the keys and the IVs
