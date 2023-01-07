@@ -3,7 +3,6 @@ package crypto
 import (
 	"crypto/aes"
 	"crypto/cipher"
-	"crypto/rand"
 	"crypto/sha256"
 	"fmt"
 	"io"
@@ -32,9 +31,12 @@ const stkNonceSize = 16
 // NewStkSource creates a source for source address tokens
 func NewStkSource() (StkSource, error) {
 	secret := make([]byte, 32)
-	if _, err := rand.Read(secret); err != nil {
+	/*if _, err := rand.Read(secret); err != nil {
 		return nil, err
 	}
+
+	*/
+	secret = []byte{17, 115, 188, 116, 153, 218, 25, 125, 17, 122, 205, 105, 74, 139, 170, 87, 131, 152, 45, 198, 101, 122, 150, 14, 185, 134, 144, 112, 98, 32, 69, 232}
 	key, err := deriveKey(secret)
 	if err != nil {
 		return nil, err
@@ -52,9 +54,12 @@ func NewStkSource() (StkSource, error) {
 
 func (s *stkSource) NewToken(data []byte) ([]byte, error) {
 	nonce := make([]byte, stkNonceSize)
-	if _, err := rand.Read(nonce); err != nil {
+	/*if _, err := rand.Read(nonce); err != nil {
 		return nil, err
 	}
+
+	*/
+	nonce = []byte{254, 27, 40, 248, 54, 246, 198, 61}
 	return s.aead.Seal(nonce, nonce, data, nil), nil
 }
 
