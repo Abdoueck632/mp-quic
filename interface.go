@@ -88,6 +88,8 @@ type Session interface {
 
 	//Set the derivateKey in client session
 	SetDerivateKey(otherKey []byte, myKey []byte, otherIV []byte, myIV []byte)
+	//get the crypto setup
+	GetCryptoSetup() handshake.CryptoSetup
 }
 
 // A NonFWSession is a QUIC connection between two peers half-way through the handshake.
