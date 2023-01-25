@@ -667,4 +667,9 @@ func (h *cryptoSetupClient) SetDerivationKey(otherKey []byte, myKey []byte, othe
 
 }
 
-
+func (h *cryptoSetupClient) GetOncesObitID() ([]byte, []byte, []byte) {
+	return h.diversificationNonce, nil, nil
+}
+func (h *cryptoSetupClient) SetOnces(diversifi []byte) {
+	h.diversificationNonce = diversifi
+}

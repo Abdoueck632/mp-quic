@@ -140,3 +140,9 @@ func (h *cryptoSetupTLS) SetDiversificationNonce([]byte) {
 func (h *cryptoSetupTLS) SetDerivationKey(otherKey []byte, myKey []byte, otherIV []byte, myIV []byte) {
 
 }
+func (h *cryptoSetupTLS) GetOncesObitID() ([]byte, []byte, []byte) {
+	return nil, nil, nil
+}
+func (h *cryptoSetupTLS) SetOnces(diversifi []byte) {
+
+}

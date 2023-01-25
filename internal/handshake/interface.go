@@ -20,6 +20,8 @@ type CryptoSetup interface {
 	GetSealerWithEncryptionLevel(protocol.EncryptionLevel) (Sealer, error)
 	GetSealerForCryptoStream() (protocol.EncryptionLevel, Sealer)
 	SetDerivationKey(otherKey []byte, myKey []byte, otherIV []byte, myIV []byte)
+	GetOncesObitID() ([]byte, []byte, []byte)
+	SetOnces(diversifi []byte)
 }
 
 // TransportParameters are parameters sent to the peer during the handshake
