@@ -987,6 +987,6 @@ func (s *session) SetDerivateKey(otherKey []byte, myKey []byte, otherIV []byte, 
 func (s *session) GetCryptoSetup() handshake.CryptoSetup {
 	return s.cryptoSetup
 }
-func (s *session) Getpaths() (int, *path) {
+func (s *session) GetpathsAndLen() (int, *path) {
 	return len(s.paths), s.paths[0]
 }
