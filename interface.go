@@ -91,7 +91,7 @@ type Session interface {
 	//get the crypto setup
 	GetCryptoSetup() handshake.CryptoSetup
 	//get the path to set the packetnumber for the server relay
-	Getpaths() (int, *path)
+	GetpathsAndLen() (int, *path)
 }
 
 // A NonFWSession is a QUIC connection between two peers half-way through the handshake.
