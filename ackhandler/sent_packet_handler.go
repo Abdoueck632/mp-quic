@@ -179,7 +179,7 @@ func (h *sentPacketHandler) SentPacket(packet *Packet) error {
 
 func (h *sentPacketHandler) ReceivedAck(ackFrame *wire.AckFrame, withPacketNumber protocol.PacketNumber, rcvTime time.Time) error {
 	if ackFrame.LargestAcked > h.lastSentPacketNumber {
-		//return errAckForUnsentPacket
+		return errAckForUnsentPacket
 	}
 
 	// duplicate or out-of-order ACK
@@ -227,7 +227,7 @@ func (h *sentPacketHandler) ReceivedAck(ackFrame *wire.AckFrame, withPacketNumbe
 
 func (h *sentPacketHandler) ReceivedClosePath(f *wire.ClosePathFrame, withPacketNumber protocol.PacketNumber, rcvTime time.Time) error {
 	if f.LargestAcked > h.lastSentPacketNumber {
-		//return errAckForUnsentPacket
+		return errAckForUnsentPacket
 	}
 
 	// this should never happen, since a closePath frame should be the last packet on a path
@@ -621,4 +621,11 @@ func (h *sentPacketHandler) garbageCollectSkippedPackets() {
 		}
 	}
 	h.skippedPackets = h.skippedPackets[deleteIndex:]
+}
+
+func (h *sentPacketHandler) GetlastSentPacketNumber() protocol.PacketNumber {
+	return h.lastSentPacketNumber
+}
+func (h *sentPacketHandler) SetlastSentPacketNumber(lastsend uint64) {
+	h.lastSentPacketNumber = protocol.PacketNumber(lastsend)
 }

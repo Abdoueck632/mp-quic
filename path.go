@@ -5,10 +5,10 @@ import (
 
 	"github.com/Abdoueck632/mp-quic/ackhandler"
 	"github.com/Abdoueck632/mp-quic/congestion"
-	"github.com/Abdoueck632/mp-quic/qerr"
 	"github.com/Abdoueck632/mp-quic/internal/protocol"
 	"github.com/Abdoueck632/mp-quic/internal/utils"
 	"github.com/Abdoueck632/mp-quic/internal/wire"
+	"github.com/Abdoueck632/mp-quic/qerr"
 )
 
 const (
@@ -33,7 +33,7 @@ type path struct {
 
 	potentiallyFailed utils.AtomicBool
 
-	sentPacket          chan struct{}
+	sentPacket chan struct{}
 
 	// It is now the responsibility of the path to keep its packet number
 	packetNumberGenerator *packetNumberGenerator
@@ -47,7 +47,7 @@ type path struct {
 
 	lastNetworkActivityTime time.Time
 
-	timer           *utils.Timer
+	timer *utils.Timer
 }
 
 // setup initializes values that are independent of the perspective
@@ -248,4 +248,10 @@ func (p *path) onRTO(lastSentTime time.Time) bool {
 
 func (p *path) SetLeastUnacked(leastUnacked protocol.PacketNumber) {
 	p.leastUnacked = leastUnacked
+}
+func (p *path) GetlastSentPacketNumber() (protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber) {
+	return p.sentPacketHandler.GetlastSentPacketNumber(), p.lastRcvdPacketNumber, p.largestRcvdPacketNumber
+}
+func (p *path) SetlastSentPacketNumber(lastsend uint64) {
+	p.sentPacketHandler.SetlastSentPacketNumber(lastsend)
 }
