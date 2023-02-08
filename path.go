@@ -254,7 +254,7 @@ func (p *path) GetlastSentPacketNumber() (protocol.PacketNumber, protocol.Packet
 }
 func (p *path) SetlastSentPacketNumber(lastsend uint64, lastRcvd uint64, largestRcvd uint64) {
 	p.sentPacketHandler.SetlastSentPacketNumber(lastsend)
-	p.lastRcvdPacketNumber = protocol.PacketNumber(lastRcvd)
+	p.lastRcvdPacketNumber = protocol.PacketNumber(largestRcvd)
 	p.largestRcvdPacketNumber = protocol.PacketNumber(largestRcvd)
 
 }
