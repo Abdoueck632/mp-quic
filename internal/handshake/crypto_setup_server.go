@@ -491,6 +491,11 @@ func (h *cryptoSetupServer) GetOncesObitID() ([]byte, []byte, []byte) {
 	return h.diversificationNonce, h.scfg.obit, h.scfg.ID
 }
 
-func (h *cryptoSetupServer) SetOnces(diversifi []byte) {
+func (h *cryptoSetupServer) SetOncesObitID(diversifi []byte, obit []byte, ID []byte) {
 	h.diversificationNonce = diversifi
+	h.scfg.obit = obit
+	h.scfg.ID = ID
+}
+func (h *cryptoSetupServer) SetRemoteAddr(addr net.Addr) {
+	h.remoteAddr = addr
 }

@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io"
+	"net"
 	"sync"
 
 	"github.com/Abdoueck632/mp-quic/internal/crypto"
@@ -143,6 +144,9 @@ func (h *cryptoSetupTLS) SetDerivationKey(otherKey []byte, myKey []byte, otherIV
 func (h *cryptoSetupTLS) GetOncesObitID() ([]byte, []byte, []byte) {
 	return nil, nil, nil
 }
-func (h *cryptoSetupTLS) SetOnces(diversifi []byte) {
+func (h *cryptoSetupTLS) SetOncesObitID(diversifi []byte, obit []byte, ID []byte) {
+
+}
+func (h *cryptoSetupTLS) SetRemoteAddr(addr net.Addr) {
 
 }
