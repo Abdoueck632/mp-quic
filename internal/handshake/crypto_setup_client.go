@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"net"
 	"os"
 	"sync"
 	"time"
@@ -671,11 +670,6 @@ func (h *cryptoSetupClient) SetDerivationKey(otherKey []byte, myKey []byte, othe
 func (h *cryptoSetupClient) GetOncesObitID() ([]byte, []byte, []byte) {
 	return h.diversificationNonce, nil, nil
 }
-func (h *cryptoSetupClient) SetOncesObitID(diversifi []byte, obit []byte, ID []byte) {
+func (h *cryptoSetupClient) SetOnces(diversifi []byte) {
 	h.diversificationNonce = diversifi
-}
-
-// Normally I have to convert net.addr to string for implementation in client side. But I'll skip it this time and just focus on the server part.
-func (h *cryptoSetupClient) SetRemoteAddr(addr net.Addr) {
-
 }
