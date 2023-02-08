@@ -628,4 +628,5 @@ func (h *sentPacketHandler) GetlastSentPacketNumber() protocol.PacketNumber {
 }
 func (h *sentPacketHandler) SetlastSentPacketNumber(lastsend uint64) {
 	h.lastSentPacketNumber = protocol.PacketNumber(lastsend)
+	h.largestReceivedPacketWithAck = protocol.PacketNumber(lastsend)
 }

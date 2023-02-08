@@ -252,6 +252,9 @@ func (p *path) SetLeastUnacked(leastUnacked protocol.PacketNumber) {
 func (p *path) GetlastSentPacketNumber() (protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber) {
 	return p.sentPacketHandler.GetlastSentPacketNumber(), p.lastRcvdPacketNumber, p.largestRcvdPacketNumber
 }
-func (p *path) SetlastSentPacketNumber(lastsend uint64) {
+func (p *path) SetlastSentPacketNumber(lastsend uint64, lastRcvd uint64, largestRcvd uint64) {
 	p.sentPacketHandler.SetlastSentPacketNumber(lastsend)
+	p.lastRcvdPacketNumber = protocol.PacketNumber(lastRcvd)
+	p.largestRcvdPacketNumber = protocol.PacketNumber(largestRcvd)
+
 }
