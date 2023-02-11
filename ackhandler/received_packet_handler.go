@@ -162,3 +162,6 @@ func (h *receivedPacketHandler) GetClosePathFrame() *wire.ClosePathFrame {
 }
 
 func (h *receivedPacketHandler) GetAlarmTimeout() time.Time { return h.ackAlarm }
+func (h *receivedPacketHandler) GetlargestlowerLimitpacketHistory() (protocol.PacketNumber, protocol.PacketNumber) {
+	return h.largestObserved, h.lowerLimit
+}

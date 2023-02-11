@@ -249,12 +249,21 @@ func (p *path) onRTO(lastSentTime time.Time) bool {
 func (p *path) SetLeastUnacked(leastUnacked protocol.PacketNumber) {
 	p.leastUnacked = leastUnacked
 }
-func (p *path) GetlastSentPacketNumber() (protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber) {
-	return p.sentPacketHandler.GetlastSentPacketNumber(), p.lastRcvdPacketNumber, p.largestRcvdPacketNumber
+func (p *path) GetlastSentPacketNumber() (protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber) {
+	a, b, c := p.sentPacketHandler.GetlastSentPacketNumber()
+	return a, b, c, p.lastRcvdPacketNumber, p.largestRcvdPacketNumber
 }
+func (p *path) GetRcvPacketNumber() (protocol.PacketNumber, protocol.PacketNumber) {
+	//a,b:=p.receivedPacketHandler.GetlargestlowerLimitpacketHistory()
+	return p.receivedPacketHandler.GetlargestlowerLimitpacketHistory()
+}
+
 func (p *path) SetlastSentPacketNumber(lastsend uint64, lastRcvd uint64, largestRcvd uint64) {
 	p.sentPacketHandler.SetlastSentPacketNumber(lastsend)
 	p.lastRcvdPacketNumber = protocol.PacketNumber(largestRcvd)
 	p.largestRcvdPacketNumber = protocol.PacketNumber(largestRcvd)
 
+}
+func (p *path) GetpacketNumberGenerator() *packetNumberGenerator {
+	return p.packetNumberGenerator
 }

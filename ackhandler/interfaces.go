@@ -29,7 +29,7 @@ type SentPacketHandler interface {
 	DuplicatePacket(packet *Packet)
 
 	GetStatistics() (uint64, uint64, uint64)
-	GetlastSentPacketNumber() protocol.PacketNumber
+	GetlastSentPacketNumber() (protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber)
 	SetlastSentPacketNumber(lastsend uint64)
 }
 
@@ -44,4 +44,5 @@ type ReceivedPacketHandler interface {
 	GetClosePathFrame() *wire.ClosePathFrame
 
 	GetStatistics() uint64
+	GetlargestlowerLimitpacketHistory() (protocol.PacketNumber, protocol.PacketNumber)
 }
