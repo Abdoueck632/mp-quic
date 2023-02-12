@@ -258,10 +258,14 @@ func (p *path) GetRcvPacketNumber() (protocol.PacketNumber, protocol.PacketNumbe
 	return p.receivedPacketHandler.GetlargestlowerLimitpacketHistory()
 }
 
-func (p *path) SetlastSentPacketNumber(lastsend uint64, lastRcvd uint64, largestRcvd uint64) {
-	p.sentPacketHandler.SetlastSentPacketNumber(lastsend)
-	p.lastRcvdPacketNumber = protocol.PacketNumber(largestRcvd)
+func (p *path) SetlastSentPacketNumber(lastsend uint64, lastRcvd uint64, largestAcked uint64, lastpath uint64, largestRcvd uint64) {
+	p.sentPacketHandler.SetlastSentPacketNumber(lastsend, lastRcvd, largestAcked)
+	p.lastRcvdPacketNumber = protocol.PacketNumber(lastpath)
 	p.largestRcvdPacketNumber = protocol.PacketNumber(largestRcvd)
+
+}
+func (p *path) SetlastRcvdPacketNumber(lastsend uint64, lastRcvd uint64) {
+	p.receivedPacketHandler.SetRcvPacketHandler(lastsend, lastRcvd)
 
 }
 func (p *path) GetpacketNumberGenerator() *packetNumberGenerator {

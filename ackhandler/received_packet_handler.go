@@ -165,3 +165,7 @@ func (h *receivedPacketHandler) GetAlarmTimeout() time.Time { return h.ackAlarm 
 func (h *receivedPacketHandler) GetlargestlowerLimitpacketHistory() (protocol.PacketNumber, protocol.PacketNumber) {
 	return h.largestObserved, h.lowerLimit
 }
+func (h *receivedPacketHandler) SetRcvPacketHandler(largestObserved uint64, lowerLimit uint64) {
+	h.largestObserved = protocol.PacketNumber(largestObserved)
+	h.lowerLimit = protocol.PacketNumber(lowerLimit)
+}

@@ -626,7 +626,8 @@ func (h *sentPacketHandler) garbageCollectSkippedPackets() {
 func (h *sentPacketHandler) GetlastSentPacketNumber() (protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber) {
 	return h.lastSentPacketNumber, h.LargestAcked, h.largestReceivedPacketWithAck
 }
-func (h *sentPacketHandler) SetlastSentPacketNumber(lastsend uint64) {
+func (h *sentPacketHandler) SetlastSentPacketNumber(lastsend uint64, largestReceive uint64, LargestAcked uint64) {
 	h.lastSentPacketNumber = protocol.PacketNumber(lastsend)
-	h.largestReceivedPacketWithAck = protocol.PacketNumber(lastsend)
+	h.largestReceivedPacketWithAck = protocol.PacketNumber(largestReceive)
+	h.LargestAcked = protocol.PacketNumber(LargestAcked)
 }
