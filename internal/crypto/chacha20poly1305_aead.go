@@ -1,3 +1,4 @@
+//go:build ignore
 // +build ignore
 
 package crypto
@@ -58,4 +59,7 @@ func (aead *aeadChacha20Poly1305) makeNonce(iv []byte, packetNumber protocol.Pac
 	copy(res[0:4], iv)
 	binary.LittleEndian.PutUint64(res[4:12], uint64(packetNumber))
 	return res
+}
+func (aead *aeadChacha20Poly1305) GetOtherIV() []byte {
+	return aead.otherIV
 }
