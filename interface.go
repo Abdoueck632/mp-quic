@@ -94,7 +94,7 @@ type Session interface {
 	GetpathsAndLen() *path
 	//Get for perspective attribut
 	GetPerspectives() protocol.Perspective
-	SetPerspectives(protocol.Perspective)
+	SetPerspectives(int)
 }
 
 // A NonFWSession is a QUIC connection between two peers half-way through the handshake.
