@@ -499,3 +499,6 @@ func (h *cryptoSetupServer) SetOncesObitID(diversifi []byte, obit []byte, ID []b
 func (h *cryptoSetupServer) SetRemoteAddr(addr net.Addr) {
 	h.remoteAddr = addr
 }
+func (h *cryptoSetupServer) GetAEADs() (crypto.AEAD, crypto.AEAD, crypto.AEAD) {
+	return h.forwardSecureAEAD, h.secureAEAD, h.nullAEAD
+}

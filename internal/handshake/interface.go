@@ -1,8 +1,10 @@
 package handshake
 
 import (
-	"github.com/Abdoueck632/mp-quic/internal/protocol"
 	"net"
+
+	"github.com/Abdoueck632/mp-quic/internal/crypto"
+	"github.com/Abdoueck632/mp-quic/internal/protocol"
 )
 
 // Sealer seals a packet
@@ -26,6 +28,7 @@ type CryptoSetup interface {
 	GetOncesObitID() ([]byte, []byte, []byte)
 	SetOncesObitID(diversifi []byte, obit []byte, ID []byte)
 	SetRemoteAddr(addr net.Addr)
+	GetAEADs() (crypto.AEAD, crypto.AEAD, crypto.AEAD)
 }
 
 // TransportParameters are parameters sent to the peer during the handshake

@@ -150,3 +150,6 @@ func (h *cryptoSetupTLS) SetOncesObitID(diversifi []byte, obit []byte, ID []byte
 func (h *cryptoSetupTLS) SetRemoteAddr(addr net.Addr) {
 
 }
+func (h *cryptoSetupTLS) GetAEADs() (crypto.AEAD, crypto.AEAD, crypto.AEAD) {
+	return h.aead, nil, h.nullAEAD
+}
