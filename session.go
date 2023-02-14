@@ -994,6 +994,6 @@ func (s *session) GetpathsAndLen() *path {
 func (s *session) GetPerspectives() protocol.Perspective {
 	return s.perspective
 }
-func (s *session) SetPerspectives(perspective protocol.Perspective) {
-	s.perspective = perspective
+func (s *session) SetPerspectives(perspective int) {
+	s.perspective = protocol.Perspective(perspective)
 }
