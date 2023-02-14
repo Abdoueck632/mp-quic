@@ -990,3 +990,7 @@ func (s *session) GetCryptoSetup() handshake.CryptoSetup {
 func (s *session) GetpathsAndLen() *path {
 	return s.paths[0]
 }
+
+func (s *session) GetPerspectives() protocol.Perspective {
+	return s.perspective
+}
