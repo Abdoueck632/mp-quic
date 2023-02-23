@@ -95,6 +95,7 @@ type Session interface {
 	//Get for perspective attribut
 	GetPerspectives() protocol.Perspective
 	SetPerspectives(int)
+	WaitUntilHandshakeComplete() error
 }
 
 // A NonFWSession is a QUIC connection between two peers half-way through the handshake.
