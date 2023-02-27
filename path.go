@@ -249,23 +249,23 @@ func (p *path) onRTO(lastSentTime time.Time) bool {
 func (p *path) SetLeastUnacked(leastUnacked protocol.PacketNumber) {
 	p.leastUnacked = leastUnacked
 }
-func (p *path) GetlastSentPacketNumber() (protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber) {
-	a, b, c := p.sentPacketHandler.GetlastSentPacketNumber()
-	return a, b, c, p.lastRcvdPacketNumber, p.largestRcvdPacketNumber
+func (p *path) GetlastSentPacketNumber() (uint64, protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber) {
+	a, b, c, packet := p.sentPacketHandler.GetlastSentPacketNumber()
+	return packet, a, b, c, p.lastRcvdPacketNumber, p.largestRcvdPacketNumber
 }
-func (p *path) GetRcvPacketNumber() (protocol.PacketNumber, protocol.PacketNumber) {
+func (p *path) GetRcvPacketNumber() (protocol.PacketNumber, protocol.PacketNumber, uint64, *wire.AckFrame) {
 	//a,b:=p.receivedPacketHandler.GetlargestlowerLimitpacketHistory()
 	return p.receivedPacketHandler.GetlargestlowerLimitpacketHistory()
 }
 
-func (p *path) SetlastSentPacketNumber(lastsend uint64, lastRcvd uint64, largestAcked uint64, lastpath uint64, largestRcvd uint64) {
-	p.sentPacketHandler.SetlastSentPacketNumber(lastsend, lastRcvd, largestAcked)
+func (p *path) SetlastSentPacketNumber(packet uint64, lastsend uint64, lastRcvd uint64, largestAcked uint64, lastpath uint64, largestRcvd uint64) {
+	p.sentPacketHandler.SetlastSentPacketNumber(lastsend, lastRcvd, largestAcked, packet)
 	p.lastRcvdPacketNumber = protocol.PacketNumber(lastpath)
 	p.largestRcvdPacketNumber = protocol.PacketNumber(largestRcvd)
 
 }
-func (p *path) SetlastRcvdPacketNumber(lastsend uint64, lastRcvd uint64) {
-	p.receivedPacketHandler.SetRcvPacketHandler(lastsend, lastRcvd)
+func (p *path) SetlastRcvdPacketNumber(lastsend uint64, lastRcvd uint64, packet uint64, lowerlastAck uint64, larglastAck uint64) {
+	p.receivedPacketHandler.SetRcvPacketHandler(lastsend, lastRcvd, packet, lowerlastAck, larglastAck)
 
 }
 func (p *path) GetpacketNumberGenerator() *packetNumberGenerator {

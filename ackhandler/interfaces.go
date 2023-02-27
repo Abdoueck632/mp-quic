@@ -29,8 +29,8 @@ type SentPacketHandler interface {
 	DuplicatePacket(packet *Packet)
 
 	GetStatistics() (uint64, uint64, uint64)
-	GetlastSentPacketNumber() (protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber)
-	SetlastSentPacketNumber(lastsend uint64, largestReceive uint64, LargestAcked uint64)
+	GetlastSentPacketNumber() (protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber, uint64)
+	SetlastSentPacketNumber(lastsend uint64, largestReceive uint64, LargestAcked uint64, packet uint64)
 }
 
 // ReceivedPacketHandler handles ACKs needed to send for incoming packets
@@ -44,6 +44,6 @@ type ReceivedPacketHandler interface {
 	GetClosePathFrame() *wire.ClosePathFrame
 
 	GetStatistics() uint64
-	GetlargestlowerLimitpacketHistory() (protocol.PacketNumber, protocol.PacketNumber)
-	SetRcvPacketHandler(largestObserved uint64, lowerLimit uint64)
+	GetlargestlowerLimitpacketHistory() (protocol.PacketNumber, protocol.PacketNumber, uint64, *wire.AckFrame)
+	SetRcvPacketHandler(uint64, uint64, uint64, uint64, uint64)
 }
