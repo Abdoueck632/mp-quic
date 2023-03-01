@@ -439,3 +439,12 @@ func (s *stream) GetBytesSent() (protocol.ByteCount, error) {
 func (s *stream) GetBytesRetrans() (protocol.ByteCount, error) {
 	return s.flowControlManager.GetBytesRetrans(s.streamID)
 }
+func (s *stream) GetReadPosInFrame() (int, uint64) {
+	return s.readPosInFrame, uint64(s.readOffset)
+}
+func (s *stream) SetReadPosInFrame(readPosInFrame int) {
+	s.readPosInFrame = readPosInFrame
+}
+func (s *stream) SetReadOffset(readOffset uint64) {
+	s.readOffset = protocol.ByteCount(readOffset)
+}
