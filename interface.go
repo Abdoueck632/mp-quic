@@ -100,6 +100,8 @@ type Session interface {
 	GetPerspectives() protocol.Perspective
 	SetPerspectives(int)
 	WaitUntilHandshakeComplete() error
+	//recuperation de la deuxieme address ip du client qu'il utilise aprés la négociation de sécurité
+	SecondRemoteAddr() net.Addr
 }
 
 // A NonFWSession is a QUIC connection between two peers half-way through the handshake.

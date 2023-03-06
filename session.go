@@ -997,3 +997,7 @@ func (s *session) GetPerspectives() protocol.Perspective {
 func (s *session) SetPerspectives(perspective int) {
 	s.perspective = protocol.Perspective(perspective)
 }
+func (s *session) SecondRemoteAddr() net.Addr {
+	// XXX (QDC): do it like with MPTCP (master initial path), what if it is closed?
+	return s.paths[1].conn.RemoteAddr()
+}
