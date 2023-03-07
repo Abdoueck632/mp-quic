@@ -84,7 +84,7 @@ type Session interface {
 	Context() context.Context
 	GetConnectionID() protocol.ConnectionID
 	//Modify the current remote address
-	SetIPAddress(addr string)
+	SetIPAddress(addr string, i int)
 	//Get the number of paths un order to see the creation of the path
 	GetPaths() [3]*path
 	//created remote path with client and relay
@@ -101,7 +101,7 @@ type Session interface {
 	SetPerspectives(int)
 	WaitUntilHandshakeComplete() error
 	//recuperation de la deuxieme address ip du client qu'il utilise aprés la négociation de sécurité
-	SecondRemoteAddr() net.Addr
+	RemoteAddrById(i int) net.Addr
 }
 
 // A NonFWSession is a QUIC connection between two peers half-way through the handshake.
