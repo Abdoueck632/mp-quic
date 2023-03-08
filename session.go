@@ -1007,3 +1007,10 @@ func (s *session) ClosePath(pthID int) {
 		utils.Debugf(" -:> Close remote path with %d ", pthID)
 	}
 }
+
+func (s *session) InversePath(pth1, pth2 int) {
+	tmp := s.paths[protocol.PathID(pth1)]
+	s.paths[protocol.PathID(pth1)] = s.paths[protocol.PathID(pth2)]
+	s.paths[protocol.PathID(pth2)] = tmp
+
+}
