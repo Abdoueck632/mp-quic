@@ -286,3 +286,7 @@ func (pm *pathManager) AddPaths(addr string) {
 	//pm.createPaths()
 
 }
+
+func (pm *pathManager) ClosePath(pthID int) error {
+	return pm.closePath(protocol.PathID(pthID))
+}
