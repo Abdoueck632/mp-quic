@@ -976,7 +976,7 @@ func (s *session) GetPaths() [3]*path {
 func (s *session) CreationRelayPath(addr string) {
 	s.pathManager.AddPaths(addr)
 	if utils.Debug() {
-		utils.Debugf("Created remote path with %s ", addr)
+		utils.Debugf(" -:> Created remote path with %s ", addr)
 	}
 }
 func (s *session) SetDerivateKey(otherKey []byte, myKey []byte, otherIV []byte, myIV []byte) {
@@ -1000,4 +1000,10 @@ func (s *session) SetPerspectives(perspective int) {
 func (s *session) RemoteAddrById(i int) net.Addr {
 	// XXX (QDC): do it like with MPTCP (master initial path), what if it is closed?
 	return s.paths[protocol.PathID(i)].conn.RemoteAddr()
+}
+func (s *session) ClosePath(pthID int) {
+	s.pathManager.closePath(protocol.PathID(pthID))
+	if utils.Debug() {
+		utils.Debugf(" -:> Close remote path with %d ", pthID)
+	}
 }
