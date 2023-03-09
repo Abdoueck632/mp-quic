@@ -1002,7 +1002,9 @@ func (s *session) RemoteAddrById(i int) net.Addr {
 	return s.paths[protocol.PathID(i)].conn.RemoteAddr()
 }
 func (s *session) ClosePath(pthID int) {
-	s.pathManager.closePath(protocol.PathID(pthID))
+	//s.pathManager.closePath(protocol.PathID(pthID))
+	s.paths[protocol.PathID(pthID)].close()
+	s.paths[protocol.PathID(pthID)].runClosed <- struct{}{}
 	if utils.Debug() {
 		utils.Debugf(" -:> Close remote path with %d ", pthID)
 	}
@@ -1011,6 +1013,6 @@ func (s *session) ClosePath(pthID int) {
 func (s *session) InversePath(pth1, pth2 int) {
 	tmp := s.paths[protocol.PathID(pth1)]
 	s.paths[protocol.PathID(pth1)] = s.paths[protocol.PathID(pth2)]
-	s.paths[protocol.PathID(pth2)] = tmp
+	s.paths[protocol.PathID(pth1)] = tmp
 
 }
