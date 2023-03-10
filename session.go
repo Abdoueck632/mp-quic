@@ -966,18 +966,27 @@ func (s *session) SetIPAddress(addr string, i int) {
 }
 
 // Get the number of paths un order to see the creation of the path
-func (s *session) GetPaths() [3]*path {
-	var paths [3]*path
+func (s *session) GetPaths() []*path {
+	var paths []*path
 	for key, value := range s.paths {
 		paths[key] = value
 	}
 	return paths
 }
-func (s *session) CreationRelayPath(addr string) {
-	s.pathManager.AddPaths(addr)
-	if utils.Debug() {
-		utils.Debugf(" -:> Created remote path with %s ", addr)
+func (s *session) CreationRelayPath(localaddr string, remoteaddr string) error {
+	err := s.pathManager.AddPaths(localaddr, remoteaddr)
+	if err != nil {
+		if utils.Debug() {
+			utils.Debugf(" -:> Created remote path with %s to %s ", localaddr, remoteaddr)
+
+		}
+	} else {
+		if utils.Debug() {
+			utils.Debugf(" -:> Echec de la creation de la path with %s to %s ", localaddr, remoteaddr)
+		}
 	}
+	return err
+
 }
 func (s *session) SetDerivateKey(otherKey []byte, myKey []byte, otherIV []byte, myIV []byte) {
 	s.cryptoSetup.SetDerivationKey(otherKey, myKey, otherIV, myIV)
@@ -1002,14 +1011,17 @@ func (s *session) RemoteAddrById(i int) net.Addr {
 	return s.paths[protocol.PathID(i)].conn.RemoteAddr()
 }
 func (s *session) ClosePath(pthID int) {
-	//s.pathManager.closePath(protocol.PathID(pthID))
+	s.pathManager.closePath(protocol.PathID(pthID))
 	s.paths[protocol.PathID(pthID)].close()
 	s.paths[protocol.PathID(pthID)].runClosed <- struct{}{}
 	if utils.Debug() {
 		utils.Debugf(" -:> Close remote path with %d ", pthID)
 	}
 }
+func (s *session) ClosePathInNil(pthID int) {
+	s.paths[protocol.PathID(pthID)] = nil
 
+}
 func (s *session) InversePath(pth1, pth2 int) {
 	tmp := s.paths[protocol.PathID(pth1)]
 	s.paths[protocol.PathID(pth1)] = s.paths[protocol.PathID(pth2)]

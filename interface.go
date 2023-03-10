@@ -86,10 +86,9 @@ type Session interface {
 	//Modify the current remote address
 	SetIPAddress(addr string, i int)
 	//Get the number of paths un order to see the creation of the path
-	GetPaths() [3]*path
+	GetPaths() []*path
 	//created remote path with client and relay
-	CreationRelayPath(addr string)
-
+	CreationRelayPath(localaddr string, remoteaddr string) error
 	//Set the derivateKey in client session
 	SetDerivateKey(otherKey []byte, myKey []byte, otherIV []byte, myIV []byte)
 	//get the crypto setup

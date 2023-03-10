@@ -278,12 +278,13 @@ func (pm *pathManager) closePaths() {
 	}
 	pm.sess.pathsLock.RUnlock()
 }
-func (pm *pathManager) AddPaths(addr string) {
-	udp, _ := net.ResolveUDPAddr("udp", addr)
-	addrFrame := wire.AddAddressFrame{4, *udp}
-	//pm.remoteAddrs4[len(pm.remoteAddrs4)] = *udp
-	pm.handleAddAddressFrame(&addrFrame)
-	//pm.createPaths()
+func (pm *pathManager) AddPaths(localaddr string, remoteaddr string) error {
+	localudp, _ := net.ResolveUDPAddr("udp", localaddr)
+	remoteudp, _ := net.ResolveUDPAddr("udp", remoteaddr)
+	return pm.createPath(*localudp, *remoteudp)
+	//addrFrame := wire.AddAddressFrame{4, *udp}
+
+	//pm.handleAddAddressFrame(&addrFrame)
 
 }
 
