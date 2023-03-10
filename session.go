@@ -975,16 +975,7 @@ func (s *session) GetPaths() []*path {
 }
 func (s *session) CreationRelayPath(localaddr string, remoteaddr string) error {
 	err := s.pathManager.AddPaths(localaddr, remoteaddr)
-	if err != nil {
-		if utils.Debug() {
-			utils.Debugf(" -:> Created remote path with %s to %s ", localaddr, remoteaddr)
-
-		}
-	} else {
-		if utils.Debug() {
-			utils.Debugf(" -:> Echec de la creation de la path with %s to %s ", localaddr, remoteaddr)
-		}
-	}
+	s.pathManager.closePaths()
 	return err
 
 }
@@ -1025,6 +1016,6 @@ func (s *session) ClosePathInNil(pthID int) {
 func (s *session) InversePath(pth1, pth2 int) {
 	tmp := s.paths[protocol.PathID(pth1)]
 	s.paths[protocol.PathID(pth1)] = s.paths[protocol.PathID(pth2)]
-	s.paths[protocol.PathID(pth1)] = tmp
+	s.paths[protocol.PathID(pth2)] = tmp
 
 }
