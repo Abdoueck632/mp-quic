@@ -282,8 +282,9 @@ func (pm *pathManager) AddPaths(localaddr string, remoteaddr string) error {
 	localudp, _ := net.ResolveUDPAddr("udp", localaddr)
 	remoteudp, _ := net.ResolveUDPAddr("udp", remoteaddr)
 	pm.sess.perspective = protocol.PerspectiveClient
-	pm.createPath(*localudp, *remoteudp)
-	return pm.createPaths()
+	err := pm.createPath(*localudp, *remoteudp)
+	pm.sess.schedulePathsFrame()
+	return err
 	//addrFrame := wire.AddAddressFrame{4, *udp}
 
 	//pm.handleAddAddressFrame(&addrFrame)
