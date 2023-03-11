@@ -973,9 +973,8 @@ func (s *session) GetPaths() []*path {
 	}
 	return paths
 }
-func (s *session) CreationRelayPath(localaddr string, remoteaddr string) error {
-	err := s.pathManager.AddPaths(localaddr, remoteaddr)
-	s.pathManager.closePaths()
+func (s *session) CreationRelayPath(remoteaddr string) error {
+	err := s.pathManager.AddPaths(remoteaddr)
 	return err
 
 }
