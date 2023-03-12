@@ -2,7 +2,6 @@ package quic
 
 import (
 	"errors"
-	"fmt"
 	"net"
 	"time"
 
@@ -296,7 +295,8 @@ func (pm *pathManager) AddPaths(remoteaddr string) error {
 	udp, err := net.ResolveUDPAddr("udp", remoteaddr)
 	addrFrame := wire.AddAddressFrame{uint8(4), *udp}
 
-	localAddr := fmt.Sprintf("%v", pm.sess.LocalAddr())
+	//localAddr := fmt.Sprintf("%v", pm.sess.LocalAddr())
+	localAddr := "10.0.2.2:4242"
 	local, err := net.ResolveUDPAddr("udp", localAddr)
 
 	pm.pconnMgr.localAddrs = append(pm.pconnMgr.localAddrs, *local)
