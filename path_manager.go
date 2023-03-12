@@ -151,13 +151,15 @@ func (pm *pathManager) createPath(locAddr net.UDPAddr, remAddr net.UDPAddr) erro
 		sess:   pm.sess,
 		conn:   &conn{pconn: pm.pconnMgr.pconns[locAddr.String()], currentAddr: &remAddr},
 	}
-	utils.Debugf("On entre dans la fonction setup avec oliaSenders %+v", pm.oliaSenders)
+	utils.Debugf("On entre dans la fonction setup avec oliaSenders %+v et path: %+v", pm.oliaSenders, pth)
 
 	pth.setup(pm.oliaSenders)
 	pm.sess.paths[pm.nxtPathID] = pth
 	if utils.Debug() {
 		utils.Debugf("Created path %x on %s to %s", pm.nxtPathID, locAddr.String(), remAddr.String())
 	}
+	utils.Debugf("Paths %+v ", pm.sess.paths)
+
 	pm.nxtPathID += 2
 	// Send a PING frame to get latency info about the new path and informing the
 	// peer of its existence
@@ -291,16 +293,12 @@ func (pm *pathManager) closePaths() {
 	}
 	pm.sess.pathsLock.RUnlock()
 }
-func (pm *pathManager) AddPaths(remoteaddr string) error {
-	udp, err := net.ResolveUDPAddr("udp", remoteaddr)
-	addrFrame := wire.AddAddressFrame{uint8(4), *udp}
+func (pm *pathManager) AddPaths(remoteaddr, localAddr string) error {
+	remote, err := net.ResolveUDPAddr("udp", remoteaddr)
 
-	//localAddr := fmt.Sprintf("%v", pm.sess.LocalAddr())
-	localAddr := "10.0.2.2:4242"
 	local, err := net.ResolveUDPAddr("udp", localAddr)
 
-	pm.pconnMgr.localAddrs = append(pm.pconnMgr.localAddrs, *local)
-	pm.handleAddAddressFrame(&addrFrame)
+	err = pm.createPath(*local, *remote)
 	pm.sess.schedulePathsFrame()
 
 	return err
