@@ -55,14 +55,10 @@ func (p *path) setup(oliaSenders map[protocol.PathID]*congestion.OliaSender) {
 	p.rttStats = &congestion.RTTStats{}
 
 	var cong congestion.SendAlgorithm
-	utils.Debugf("debut fonction setup avec pathID:%+v, InitialPathID:%+v")
 
 	if p.sess.version >= protocol.VersionMP && oliaSenders != nil && p.pathID != protocol.InitialPathID {
-		utils.Debugf("if pour la creation de newOliaSender")
-
 		cong = congestion.NewOliaSender(oliaSenders, p.rttStats, protocol.InitialCongestionWindow, protocol.DefaultMaxCongestionWindow)
 		oliaSenders[p.pathID] = cong.(*congestion.OliaSender)
-		utils.Debugf("last oliaSenders %+v", oliaSenders)
 	}
 
 	sentPacketHandler := ackhandler.NewSentPacketHandler(p.rttStats, cong, p.onRTO)
@@ -83,7 +79,6 @@ func (p *path) setup(oliaSenders map[protocol.PathID]*congestion.OliaSender) {
 
 	p.open.Set(true)
 	p.potentiallyFailed.Set(false)
-	utils.Debugf("Fin de la fonction setup")
 
 	// Once the path is setup, run it
 	go p.run()
