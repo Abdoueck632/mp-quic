@@ -2,6 +2,7 @@ package quic
 
 import (
 	"errors"
+	"fmt"
 	"net"
 	"time"
 
@@ -280,8 +281,12 @@ func (pm *pathManager) closePaths() {
 }
 func (pm *pathManager) AddPaths(remoteaddr string) error {
 	udp, err := net.ResolveUDPAddr("udp", remoteaddr)
-	addrFrame := wire.AddAddressFrame{4, *udp}
+	addrFrame := wire.AddAddressFrame{uint8(4), *udp}
 
+	localAddr := fmt.Sprintf("%v", pm.sess.LocalAddr())
+	local, err := net.ResolveUDPAddr("udp", localAddr)
+
+	pm.pconnMgr.localAddrs = append(pm.pconnMgr.localAddrs, *local)
 	pm.handleAddAddressFrame(&addrFrame)
 	pm.sess.schedulePathsFrame()
 
