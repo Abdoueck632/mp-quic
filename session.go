@@ -1004,7 +1004,10 @@ func (s *session) SetPerspectives(perspective int) {
 }
 func (s *session) RemoteAddrById(i int) net.Addr {
 	// XXX (QDC): do it like with MPTCP (master initial path), what if it is closed?
-	return s.paths[protocol.PathID(i)].conn.RemoteAddr()
+	if val, ok := s.paths[protocol.PathID(i)]; ok {
+		return val.conn.RemoteAddr()
+	}
+	return nil
 }
 func (s *session) ClosePath(pthID int) {
 	s.pathManager.closePath(protocol.PathID(pthID))
