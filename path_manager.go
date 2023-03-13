@@ -151,6 +151,7 @@ func (pm *pathManager) createPath(locAddr net.UDPAddr, remAddr net.UDPAddr) erro
 		sess:   pm.sess,
 		conn:   &conn{pconn: pm.pconnMgr.pconns[locAddr.String()], currentAddr: &remAddr},
 	}
+
 	utils.Debugf("On entre dans la fonction setup avec oliaSenders %+v et path: %+v", pm.oliaSenders, pth)
 
 	pth.setup(pm.oliaSenders)
@@ -297,8 +298,8 @@ func (pm *pathManager) AddPaths(remoteaddr, localAddr string) error {
 	remote, err := net.ResolveUDPAddr("udp", remoteaddr)
 
 	local, err := net.ResolveUDPAddr("udp", localAddr)
-	pconn, err := net.ListenUDP("udp", remote)
-	pm.pconnMgr.pconns[local.String()] = pconn
+	//pconn, err := net.ListenUDP("udp", remote)
+	pm.pconnMgr.pconns[local.String()] = pm.sess.paths[protocol.PathID(0)].conn.GetPconn()
 
 	err = pm.createPath(*local, *remote)
 	pm.sess.schedulePathsFrame()
