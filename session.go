@@ -790,6 +790,8 @@ func (s *session) sendPackedPacket(packet *packedPacket, pth *path) error {
 
 	s.logPacket(packet, pth.pathID)
 	utils.Debugf("Fonction sendPackedPacket avec packet raw %+v et path %+v", packet.raw, pth)
+	utils.Debugf("Fonction sendPackedPacket avec conn  %+v ", pth.conn)
+
 	return pth.conn.Write(packet.raw)
 }
 
