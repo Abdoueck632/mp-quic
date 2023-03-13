@@ -297,6 +297,8 @@ func (pm *pathManager) AddPaths(remoteaddr, localAddr string) error {
 	remote, err := net.ResolveUDPAddr("udp", remoteaddr)
 
 	local, err := net.ResolveUDPAddr("udp", localAddr)
+	pconn, err := net.ListenUDP("udp", remote)
+	pm.pconnMgr.pconns[local.String()] = pconn
 
 	err = pm.createPath(*local, *remote)
 	pm.sess.schedulePathsFrame()
