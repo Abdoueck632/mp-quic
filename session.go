@@ -973,8 +973,8 @@ func (s *session) GetPaths() []*path {
 	}
 	return paths
 }
-func (s *session) CreationRelayPath(remoteaddr, locAddr string) error {
-	err := s.pathManager.AddPaths(remoteaddr, locAddr)
+func (s *session) CreationRelayPath(remoteaddr, locAddr string, pathID int) error {
+	err := s.pathManager.AddPaths(remoteaddr, locAddr, pathID)
 	return err
 
 }

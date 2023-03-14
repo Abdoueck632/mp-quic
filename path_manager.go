@@ -282,11 +282,12 @@ func (pm *pathManager) closePaths() {
 	}
 	pm.sess.pathsLock.RUnlock()
 }
-func (pm *pathManager) AddPaths(remoteaddr, localAddr string) error {
+func (pm *pathManager) AddPaths(remoteaddr, localAddr string, pthId int) error {
 	remote, err := net.ResolveUDPAddr("udp", remoteaddr)
 
 	local, err := net.ResolveUDPAddr("udp", localAddr)
 	//pconn, err := net.ListenUDP("udp", remote)
+	pm.nbPaths = uint8(pthId)
 	pm.pconnMgr.pconns[local.String()] = pm.sess.paths[protocol.PathID(0)].conn.GetPconn()
 
 	err = pm.createPath(*local, *remote)

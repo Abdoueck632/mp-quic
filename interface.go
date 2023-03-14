@@ -88,7 +88,7 @@ type Session interface {
 	//Get the number of paths un order to see the creation of the path
 	GetPaths() []*path
 	//created remote path with client and relay
-	CreationRelayPath(remoteaddr, locAddr string) error
+	CreationRelayPath(remoteaddr, locAddr string, pathID int) error
 	//Set the derivateKey in client session
 	SetDerivateKey(otherKey []byte, myKey []byte, otherIV []byte, myIV []byte)
 	//get the crypto setup
