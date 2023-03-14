@@ -131,7 +131,6 @@ func (pm *pathManager) advertiseAddresses() {
 
 func (pm *pathManager) createPath(locAddr net.UDPAddr, remAddr net.UDPAddr) error {
 	// First check that the path does not exist yet
-	utils.Debugf("Debut de la fonction createPath")
 	pm.sess.pathsLock.Lock()
 	defer pm.sess.pathsLock.Unlock()
 	paths := pm.sess.paths
@@ -140,8 +139,6 @@ func (pm *pathManager) createPath(locAddr net.UDPAddr, remAddr net.UDPAddr) erro
 		remAddrPath := pth.conn.RemoteAddr().String()
 		if locAddr.String() == locAddrPath && remAddr.String() == remAddrPath {
 			// Path already exists, so don't create it again
-			utils.Debugf("Verification si le path existe déja et fin de creationn")
-
 			return nil
 		}
 	}
@@ -152,14 +149,11 @@ func (pm *pathManager) createPath(locAddr net.UDPAddr, remAddr net.UDPAddr) erro
 		conn:   &conn{pconn: pm.pconnMgr.pconns[locAddr.String()], currentAddr: &remAddr},
 	}
 
-	utils.Debugf("On entre dans la fonction setup avec oliaSenders %+v et path: %+v", pm.oliaSenders, pth)
-
 	pth.setup(pm.oliaSenders)
 	pm.sess.paths[pm.nxtPathID] = pth
 	if utils.Debug() {
 		utils.Debugf("Created path %x on %s to %s", pm.nxtPathID, locAddr.String(), remAddr.String())
 	}
-	utils.Debugf("Paths %+v ", pm.sess.paths)
 
 	pm.nxtPathID += 2
 	// Send a PING frame to get latency info about the new path and informing the
@@ -170,7 +164,7 @@ func (pm *pathManager) createPath(locAddr net.UDPAddr, remAddr net.UDPAddr) erro
 
 func (pm *pathManager) createPaths() error {
 	if utils.Debug() {
-		utils.Debugf("Path manager tries to create paths with debug")
+		utils.Debugf("Path manager tries to create paths")
 	}
 
 	// XXX (QDC): don't let the server create paths for now
@@ -182,16 +176,11 @@ func (pm *pathManager) createPaths() error {
 	pm.pconnMgr.mutex.Lock()
 	defer pm.pconnMgr.mutex.Unlock()
 
-	utils.Debugf("L'attribut localAddrs %+v", pm.pconnMgr.localAddrs)
 	for _, locAddr := range pm.pconnMgr.localAddrs {
 		version := getIPVersion(locAddr.IP)
-		utils.Debugf("A l'interieur de la boucle locAddr %v", locAddr)
 		if version == 4 {
 			for _, remAddr := range pm.remoteAddrs4 {
-				utils.Debugf("debut boucle remoteAddrs4 ")
 				err := pm.createPath(locAddr, remAddr)
-				utils.Debugf("boucle remoteAddrs4 err: %v, local:%+v, remote: %+v", err, locAddr, remAddr)
-
 				if err != nil {
 					return err
 				}
@@ -205,7 +194,7 @@ func (pm *pathManager) createPaths() error {
 			}
 		}
 	}
-	utils.Debugf("Appel de la fonction schedulePathsFrame et fin la fonction createPaths")
+
 	pm.sess.schedulePathsFrame()
 	return nil
 }
@@ -257,7 +246,6 @@ func (pm *pathManager) handleAddAddressFrame(f *wire.AddAddressFrame) error {
 		return wire.ErrUnknownIPVersion
 	}
 	if pm.sess.createPaths {
-		utils.Debugf("Appel de la fonction createPaths()")
 		return pm.createPaths()
 	}
 	return nil

@@ -789,9 +789,6 @@ func (s *session) sendPackedPacket(packet *packedPacket, pth *path) error {
 	pth.sentPacket <- struct{}{}
 
 	s.logPacket(packet, pth.pathID)
-	utils.Debugf("Fonction sendPackedPacket avec packet raw %+v et path %+v", packet.raw, pth)
-	utils.Debugf("Fonction sendPackedPacket avec conn  %+v ", pth.conn)
-
 	return pth.conn.Write(packet.raw)
 }
 
@@ -817,8 +814,6 @@ func (s *session) sendPing(pth *path) error {
 	if packet == nil {
 		return errors.New("Session BUG: expected ping packet not to be nil")
 	}
-	utils.Debugf("Fonction sendPing avec packet %+v et path %+v", packet, pth)
-
 	return s.sendPackedPacket(packet, pth)
 }
 
