@@ -175,7 +175,6 @@ func (pm *pathManager) createPaths() error {
 	// TODO (QDC): clearly not optimali
 	pm.pconnMgr.mutex.Lock()
 	defer pm.pconnMgr.mutex.Unlock()
-
 	for _, locAddr := range pm.pconnMgr.localAddrs {
 		version := getIPVersion(locAddr.IP)
 		if version == 4 {
@@ -283,15 +282,14 @@ func (pm *pathManager) closePaths() {
 	pm.sess.pathsLock.RUnlock()
 }
 func (pm *pathManager) AddPaths(remoteaddr, localAddr string, pthId int) error {
-	remote, err := net.ResolveUDPAddr("udp", remoteaddr)
+	remote, _ := net.ResolveUDPAddr("udp", remoteaddr)
 
-	local, err := net.ResolveUDPAddr("udp", localAddr)
+	local, _ := net.ResolveUDPAddr("udp", localAddr)
 	//pconn, err := net.ListenUDP("udp", remote)
 	pm.nxtPathID = protocol.PathID(pthId)
 	pm.pconnMgr.pconns[local.String()] = pm.sess.paths[protocol.PathID(0)].conn.GetPconn()
 
-	err = pm.createPath(*local, *remote)
-	pm.sess.schedulePathsFrame()
+	err := pm.createPath(*local, *remote)
 
 	return err
 }
