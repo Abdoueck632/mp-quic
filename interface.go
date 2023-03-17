@@ -104,6 +104,7 @@ type Session interface {
 	ClosePath(pthID int)
 	InversePath(pth1, pth2 int)
 	GetPathManager() pathManager
+	AdvertiseAddress(ipaddr string)
 }
 
 // A NonFWSession is a QUIC connection between two peers half-way through the handshake.

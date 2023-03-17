@@ -1024,3 +1024,6 @@ func (s *session) InversePath(pth1, pth2 int) {
 	s.paths[protocol.PathID(pth2)] = tmp
 
 }
+func (s *session) AdvertiseAddress(ipaddr string) {
+	s.pathManager.AdvertiseRelayAddresses(ipaddr)
+}

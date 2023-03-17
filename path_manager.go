@@ -293,6 +293,16 @@ func (pm *pathManager) AddPaths(remoteaddr, localAddr string, pthId int) error {
 
 	return err
 }
+func (pm *pathManager) AdvertiseRelayAddresses(ipaddr string) {
+	pm.pconnMgr.mutex.Lock()
+	defer pm.pconnMgr.mutex.Unlock()
+	remote, _ := net.ResolveUDPAddr("udp", ipaddr)
+
+	//version := getIPVersion(locAddr.IP)
+	pm.sess.streamFramer.AddAddressForTransmission(uint8(4), *remote)
+	//pm.advertisedLocAddrs[locAddr.String()] = true
+
+}
 
 func (pm *pathManager) ClosePath(pthID int) error {
 	return pm.closePath(protocol.PathID(pthID))
