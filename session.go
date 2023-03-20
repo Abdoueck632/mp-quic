@@ -1007,12 +1007,7 @@ func (s *session) RemoteAddrById(i int) net.Addr {
 	return nil
 }
 func (s *session) ClosePath(pthID int) {
-	s.pathManager.closePath(protocol.PathID(pthID))
-	s.paths[protocol.PathID(pthID)].close()
-	s.paths[protocol.PathID(pthID)].runClosed <- struct{}{}
-	if utils.Debug() {
-		utils.Debugf(" -:> Close remote path with %d ", pthID)
-	}
+	s.closePath(protocol.PathID(pthID), true)
 }
 func (s *session) ClosePathInNil(pthID int) {
 	s.paths[protocol.PathID(pthID)] = nil
