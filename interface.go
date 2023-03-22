@@ -93,8 +93,8 @@ type Session interface {
 	SetDerivateKey(otherKey []byte, myKey []byte, otherIV []byte, myIV []byte)
 	//get the crypto setup
 	GetCryptoSetup() handshake.CryptoSetup
-	//get the path to set the packetnumber for the server relay
-	GetpathsAndLen() *path
+	//get the lenght of path
+	GetLenPaths() int
 	//Get for perspective attribut
 	GetPerspectives() protocol.Perspective
 	SetPerspectives(int)
