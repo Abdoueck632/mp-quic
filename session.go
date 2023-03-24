@@ -960,9 +960,9 @@ func (s *session) GetConnectionID() protocol.ConnectionID {
 }
 
 // add function to set the current remote address
-func (s *session) SetIPAddress(addr string, i int) {
+func (s *session) SetIPAddress(addr string) {
 	udpAddr, _ := net.ResolveUDPAddr("udp", addr)
-	s.paths[protocol.PathID(i)].conn.SetCurrentRemoteAddr(udpAddr)
+	s.paths[0].conn.SetCurrentRemoteAddr(udpAddr)
 }
 
 // Get the number of paths un order to see the creation of the path
@@ -997,7 +997,7 @@ func (s *session) GetPerspectives() protocol.Perspective {
 func (s *session) SetPerspectives(perspective int) {
 	s.perspective = protocol.Perspective(perspective)
 }
-func (s *session) RemoteAddrById(i int) net.Addr {
+func (s *session) SecondRemoteAddr() net.Addr {
 	// XXX (QDC): do it like with MPTCP (master initial path), what if it is closed?
-	return s.paths[protocol.PathID(i)].conn.RemoteAddr()
+	return s.paths[1].conn.RemoteAddr()
 }
