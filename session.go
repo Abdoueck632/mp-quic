@@ -989,6 +989,9 @@ func (s *session) GetCryptoSetup() handshake.CryptoSetup {
 func (s *session) GetLenPaths() int {
 	return len(s.paths)
 }
+func (s *session) GetpathsAndLen(pthId int) *path {
+	return s.paths[protocol.PathID(pthId)]
+}
 
 func (s *session) GetPerspectives() protocol.Perspective {
 	return s.perspective
