@@ -278,28 +278,11 @@ func (pm *pathManager) closePaths() {
 	}
 	pm.sess.pathsLock.RUnlock()
 }
-func (pm *pathManager) AddPaths(remoteaddr, localAddr string, pthId int) error {
-	remote, _ := net.ResolveUDPAddr("udp", remoteaddr)
+func (pm *pathManager) AddPaths(addr string) {
+	udp, _ := net.ResolveUDPAddr("udp", addr)
+	addrFrame := wire.AddAddressFrame{4, *udp}
+	//pm.remoteAddrs4[len(pm.remoteAddrs4)] = *udp
+	pm.handleAddAddressFrame(&addrFrame)
+	//pm.createPaths()
 
-	local, _ := net.ResolveUDPAddr("udp", localAddr)
-	//pconn, err := net.ListenUDP("udp", remote)
-	pm.nxtPathID = protocol.PathID(pthId)
-	pm.pconnMgr.pconns[local.String()] = pm.sess.paths[protocol.PathID(0)].conn.GetPconn()
-
-	err := pm.createPath(*local, *remote)
-
-	return err
-}
-func (pm *pathManager) AdvertiseRelayAddresses(ipaddr string) {
-	pm.pconnMgr.mutex.Lock()
-	defer pm.pconnMgr.mutex.Unlock()
-	remote, _ := net.ResolveUDPAddr("udp", ipaddr)
-
-	//version := getIPVersion(locAddr.IP)
-	pm.sess.streamFramer.AddAddressForTransmission(uint8(4), *remote)
-	//pm.advertisedLocAddrs[locAddr.String()] = true
-
-}
-func (pm *pathManager) ClosePath(pthID int) error {
-	return pm.closePath(protocol.PathID(pthID))
 }
