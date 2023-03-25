@@ -966,18 +966,17 @@ func (s *session) SetIPAddress(addr string) {
 }
 
 // Get the number of paths un order to see the creation of the path
-func (s *session) GetPaths() [3]*path {
-	var paths [3]*path
+func (s *session) GetPaths() []*path {
+	var paths []*path
 	for key, value := range s.paths {
 		paths[key] = value
 	}
 	return paths
 }
-func (s *session) CreationRelayPath(addr string) {
-	s.pathManager.AddPaths(addr)
-	if utils.Debug() {
-		utils.Debugf("Created remote path with %s ", addr)
-	}
+func (s *session) CreationRelayPath(remoteaddr, locAddr string, pathID int) error {
+	err := s.pathManager.AddPaths(remoteaddr, locAddr, pathID)
+	return err
+
 }
 func (s *session) SetDerivateKey(otherKey []byte, myKey []byte, otherIV []byte, myIV []byte) {
 	s.cryptoSetup.SetDerivationKey(otherKey, myKey, otherIV, myIV)
@@ -987,17 +986,20 @@ func (s *session) SetDerivateKey(otherKey []byte, myKey []byte, otherIV []byte, 
 func (s *session) GetCryptoSetup() handshake.CryptoSetup {
 	return s.cryptoSetup
 }
-func (s *session) GetpathsAndLen() *path {
-	return s.paths[0]
+func (s *session) GetLenPaths() int {
+	return len(s.paths)
 }
 
 func (s *session) GetPerspectives() protocol.Perspective {
 	return s.perspective
+}
+func (s *session) GetPathManager() pathManager {
+	return *s.pathManager
 }
 func (s *session) SetPerspectives(perspective int) {
 	s.perspective = protocol.Perspective(perspective)
 }
 func (s *session) SecondRemoteAddr() net.Addr {
 	// XXX (QDC): do it like with MPTCP (master initial path), what if it is closed?
-	return s.paths[1].conn.RemoteAddr()
+	return s.paths[protocol.PathID(i)].conn.RemoteAddr()
 }

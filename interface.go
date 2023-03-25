@@ -86,22 +86,21 @@ type Session interface {
 	//Modify the current remote address
 	SetIPAddress(addr string)
 	//Get the number of paths un order to see the creation of the path
-	GetPaths() [3]*path
+	GetPaths() []*path
 	//created remote path with client and relay
-	CreationRelayPath(addr string)
-
+	CreationRelayPath(remoteaddr, locAddr string, pathID int) error
 	//Set the derivateKey in client session
 	SetDerivateKey(otherKey []byte, myKey []byte, otherIV []byte, myIV []byte)
 	//get the crypto setup
 	GetCryptoSetup() handshake.CryptoSetup
-	//get the path to set the packetnumber for the server relay
-	GetpathsAndLen() *path
+	//get the lenght of path
+	GetLenPaths() int
 	//Get for perspective attribut
 	GetPerspectives() protocol.Perspective
 	SetPerspectives(int)
 	WaitUntilHandshakeComplete() error
 	//recuperation de la deuxieme address ip du client qu'il utilise aprés la négociation de sécurité
-	SecondRemoteAddr() net.Addr
+	RemoteAddrById(i int) net.Addr
 }
 
 // A NonFWSession is a QUIC connection between two peers half-way through the handshake.
