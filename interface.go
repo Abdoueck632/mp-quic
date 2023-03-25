@@ -102,6 +102,7 @@ type Session interface {
 	//recuperation de la deuxieme address ip du client qu'il utilise aprés la négociation de sécurité
 	RemoteAddrById(i int) net.Addr
 	GetpathsAndLen(pthId int) *path
+	ClosePath(pthID int)
 }
 
 // A NonFWSession is a QUIC connection between two peers half-way through the handshake.
