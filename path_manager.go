@@ -148,7 +148,7 @@ func (pm *pathManager) createPath(locAddr net.UDPAddr, remAddr net.UDPAddr) erro
 		sess:   pm.sess,
 		conn:   &conn{pconn: pm.pconnMgr.pconns[locAddr.String()], currentAddr: &remAddr},
 	}
-
+	pm.nbPaths++
 	pth.setup(pm.oliaSenders)
 	pm.sess.paths[pm.nxtPathID] = pth
 	if utils.Debug() {

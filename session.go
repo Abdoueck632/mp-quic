@@ -535,12 +535,17 @@ func (s *session) handleFrames(fs []wire.Frame, p *path) error {
 		case *wire.PathsFrame:
 			// So far, do nothing
 			s.pathsLock.RLock()
+			if !utils.Debug() {
+				// We don't need to allocate the slices for calling the format functions
+				utils.Debugf("%+v", frame)
+
+			}
 			for i := 0; i < int(frame.NumPaths); i++ {
 				s.remoteRTTs[frame.PathIDs[i]] = frame.RemoteRTTs[i]
 				if frame.RemoteRTTs[i] >= 30*time.Minute {
 					// Path is potentially failed
-					//s.paths[frame.PathIDs[i]].potentiallyFailed.Set(true)
-					//return errors.New("Session BUG: Path is potentially failed")
+					s.paths[frame.PathIDs[i]].potentiallyFailed.Set(true)
+
 				}
 			}
 			s.pathsLock.RUnlock()
