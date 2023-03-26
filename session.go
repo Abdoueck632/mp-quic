@@ -535,7 +535,7 @@ func (s *session) handleFrames(fs []wire.Frame, p *path) error {
 		case *wire.PathsFrame:
 			// So far, do nothing
 			s.pathsLock.RLock()
-			if !utils.Debug() {
+			if utils.Debug() {
 				// We don't need to allocate the slices for calling the format functions
 				utils.Debugf("%+v", frame)
 
