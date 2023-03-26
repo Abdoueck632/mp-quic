@@ -540,7 +540,7 @@ func (s *session) handleFrames(fs []wire.Frame, p *path) error {
 				if frame.RemoteRTTs[i] >= 30*time.Minute {
 					// Path is potentially failed
 					//s.paths[frame.PathIDs[i]].potentiallyFailed.Set(true)
-					return errors.New("Session BUG: Path is potentially failed")
+					//return errors.New("Session BUG: Path is potentially failed")
 				}
 			}
 			s.pathsLock.RUnlock()
