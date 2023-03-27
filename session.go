@@ -541,6 +541,9 @@ func (s *session) handleFrames(fs []wire.Frame, p *path) error {
 
 			}
 			for i := 0; i < int(frame.NumPaths); i++ {
+				if _, ok := s.paths[frame.PathIDs[i]]; !ok {
+					continue
+				}
 				s.remoteRTTs[frame.PathIDs[i]] = frame.RemoteRTTs[i]
 				if frame.RemoteRTTs[i] >= 30*time.Minute {
 					// Path is potentially failed
