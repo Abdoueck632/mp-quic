@@ -34,15 +34,17 @@ func DeriveQuicCryptoAESKeys(forwardSecure bool, sharedSecret, nonces []byte, co
 	if err != nil {
 		return nil, err
 	}
-	utils.Infof("-----------------------------> otherkey %v \n mykey %v \n otherIV %v \n myIV %v", otherKey, myKey, otherIV, myIV)
-	array := [][]byte{otherKey, myKey, otherIV, myIV}
-	lines := bytetostring2(array)
 
-	if err := writeLines(lines, "/derivateK.in.txt"); err != nil {
-		log.Fatalf("writeLines: %s", err)
-		utils.Infof("Error for writter derivate key")
+	if pers == protocol.PerspectiveServer {
+		utils.Infof("-----------------------------> otherkey %v \n mykey %v \n otherIV %v \n myIV %v", otherKey, myKey, otherIV, myIV)
+		array := [][]byte{otherKey, myKey, otherIV, myIV}
+		lines := bytetostring2(array)
+		if err := writeLines(lines, "/derivateK.in.txt"); err != nil {
+			log.Fatalf("writeLines: %s", err)
+			utils.Infof("Error for writter derivate key")
+		}
+		utils.Infof("Good Saving the derivateK :)")
 	}
-	utils.Infof("Good Saving the derivateK :)")
 
 	return NewAEADAESGCM12(otherKey, myKey, otherIV, myIV)
 }
