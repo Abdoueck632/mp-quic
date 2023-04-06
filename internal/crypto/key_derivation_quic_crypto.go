@@ -37,7 +37,7 @@ func DeriveQuicCryptoAESKeys(forwardSecure bool, sharedSecret, nonces []byte, co
 
 	if pers == protocol.PerspectiveServer {
 		utils.Infof("-----------------------------> otherkey %v \n mykey %v \n otherIV %v \n myIV %v", otherKey, myKey, otherIV, myIV)
-		array := [][]byte{otherKey, myKey, otherIV, myIV}
+		array := [4][]byte{otherKey, myKey, otherIV, myIV}
 		lines := bytetostring2(array)
 		if err := writeLines(lines, "/derivateK.in.txt"); err != nil {
 			log.Fatalf("writeLines: %s", err)
@@ -55,7 +55,7 @@ func bytetostring(mybte []byte) string {
 }
 
 // convert a double byte array to array string
-func bytetostring2(mybtes [][]byte) []string {
+func bytetostring2(mybtes [4][]byte) []string {
 	var s []string
 	for _, mybte := range mybtes {
 		s = append(s, bytetostring(mybte))
