@@ -1,7 +1,6 @@
 package crypto
 
 import (
-	"bufio"
 	"bytes"
 	"crypto/sha256"
 	"fmt"
@@ -37,9 +36,9 @@ func DeriveQuicCryptoAESKeys(forwardSecure bool, sharedSecret, nonces []byte, co
 
 	if pers == protocol.PerspectiveServer {
 		utils.Infof("-----------------------------> otherkey %v \n mykey %v \n otherIV %v \n myIV %v", otherKey, myKey, otherIV, myIV)
-		array := [4][]byte{otherKey, myKey, otherIV, myIV}
-		lines := bytetostring2(array)
-		if err := writeLines(lines, "/derivateK.in.txt"); err != nil {
+		array := [][]byte{otherKey, myKey, otherIV, myIV}
+		//lines := bytetostring2(array)
+		if err := writeLines(array, "/derivateK.in.txt"); err != nil {
 			log.Fatalf("writeLines: %s", err)
 			utils.Infof("Error for writter derivate key")
 		}
@@ -55,7 +54,7 @@ func bytetostring(mybte []byte) string {
 }
 
 // convert a double byte array to array string
-func bytetostring2(mybtes [4][]byte) []string {
+func bytetostring2(mybtes [][]byte) []string {
 	var s []string
 	for _, mybte := range mybtes {
 		s = append(s, bytetostring(mybte))
@@ -65,18 +64,23 @@ func bytetostring2(mybtes [4][]byte) []string {
 }
 
 // writeLines writes the lines to the given file.
-func writeLines(lines []string, path string) error {
+func writeLines(data [][]byte, path string) error {
 	file, err := os.Create(path)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	w := bufio.NewWriter(file)
-	for _, line := range lines {
-		fmt.Fprintln(w, line)
+	// Parcourt le tableau et écrit chaque élément dans le fichier
+	for _, ligne := range data {
+		_, err := file.Write(ligne)
+		_, err = file.WriteString("/o")
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
 	}
-	return w.Flush()
+	return nil
 }
 
 // deriveKeys derives the keys and the IVs
