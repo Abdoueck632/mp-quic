@@ -1017,6 +1017,10 @@ func (s *session) AdvertiseAddress(ipaddr string) {
 func (s *session) ClosePath(pthID int) {
 	s.closePath(protocol.PathID(pthID), true)
 }
+func (s *session) GetClosePath(pthID int) bool {
+	return s.closedPaths[protocol.PathID(pthID)]
+}
+
 func (s *session) RemoteAddrById(i int) net.Addr {
 	// XXX (QDC): do it like with MPTCP (master initial path), what if it is closed?
 	if val, ok := s.paths[protocol.PathID(i)]; ok {
