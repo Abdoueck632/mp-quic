@@ -1017,6 +1017,9 @@ func (s *session) AdvertiseAddress(ipaddr string) {
 func (s *session) ClosePath(pthID int) {
 	s.closePath(protocol.PathID(pthID), true)
 }
+func (s *session) OpenPath(pthID int) {
+	s.closePath(protocol.PathID(pthID), false)
+}
 func (s *session) GetClosePath(pthID int) bool {
 	return s.closedPaths[protocol.PathID(pthID)]
 }
