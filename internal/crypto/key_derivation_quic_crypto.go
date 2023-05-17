@@ -3,7 +3,7 @@ package crypto
 import (
 	"bytes"
 	"crypto/sha256"
-	"fmt"
+	"encoding/json"
 	"io"
 	"log"
 	"os"
@@ -38,7 +38,7 @@ func DeriveQuicCryptoAESKeys(forwardSecure bool, sharedSecret, nonces []byte, co
 		utils.Infof("-----------------------------> otherkey %v \n mykey %v \n otherIV %v \n myIV %v", otherKey, myKey, otherIV, myIV)
 		array := [][]byte{otherKey, myKey, otherIV, myIV}
 		//lines := bytetostring2(array)
-		if err := writeLines(array, "/derivateK.in.txt"); err != nil {
+		if err := saveDerivedKeys(array, "/derivateK.in.json"); err != nil {
 			log.Fatalf("writeLines: %s", err)
 			utils.Infof("Error for writter derivate key")
 		}
@@ -64,7 +64,7 @@ func bytetostring2(mybtes [][]byte) []string {
 }
 
 // writeLines writes the lines to the given file.
-func writeLines(data [][]byte, path string) error {
+func saveDerivedKeys(data [][]byte, path string) error {
 	file, err := os.Create(path)
 	if err != nil {
 		return err
@@ -72,15 +72,13 @@ func writeLines(data [][]byte, path string) error {
 	defer file.Close()
 
 	// Parcourt le tableau et écrit chaque élément dans le fichier
-	for _, ligne := range data {
-		_, err := file.Write(ligne)
-		_, err = file.WriteString("/o")
-		if err != nil {
-			fmt.Println(err)
-			return err
-		}
+	dataByte, err := json.Marshal(data)
+	if err != nil {
+		log.Fatal(err)
 	}
-	return nil
+	_, err = file.Write(dataByte)
+
+	return err
 }
 
 // deriveKeys derives the keys and the IVs
