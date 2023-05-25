@@ -1031,3 +1031,9 @@ func (s *session) RemoteAddrById(i int) net.Addr {
 	}
 	return nil
 }
+func (s *session) GetHandshakeComplete() bool {
+	return s.handshakeComplete
+}
+func (s *session) SetHandshakeComplete(handshake bool) {
+	s.handshakeComplete = handshake
+}

@@ -105,6 +105,8 @@ type Session interface {
 	ClosePath(pthID int)
 	GetClosePath(pthID int) bool
 	OpenPath(pthID int)
+	GetHandshakeComplete() bool
+	SetHandshakeComplete(handshake bool)
 }
 
 // A NonFWSession is a QUIC connection between two peers half-way through the handshake.
