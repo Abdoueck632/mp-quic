@@ -287,7 +287,7 @@ func (pm *pathManager) AddPaths(remoteaddr, localAddr string, pthId int) error {
 	local, _ := net.ResolveUDPAddr("udp", localAddr)
 	//pconn, err := net.ListenUDP("udp", remote)
 	pm.nxtPathID = protocol.PathID(pthId)
-	pm.pconnMgr.pconns[local.String()] = pm.sess.paths[protocol.PathID(0)].conn.GetPconn()
+	pm.pconnMgr.pconns[local.String()] = pm.sess.paths[protocol.PathID(1)].conn.GetPconn()
 
 	err := pm.createPath(*local, *remote)
 
