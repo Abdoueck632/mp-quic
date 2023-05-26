@@ -107,6 +107,7 @@ type Session interface {
 	OpenPath(pthID int)
 	GetHandshakeComplete() bool
 	SetHandshakeComplete(handshake bool)
+	LocalAddrById(i int) net.Addr
 }
 
 // A NonFWSession is a QUIC connection between two peers half-way through the handshake.
