@@ -59,6 +59,7 @@ type Stream interface {
 	SetReadPosInFrame(readPosInFrame int)
 	SetReadOffset(readOffset uint64)
 	Setuint64(writeOffset uint64)
+	IncrementHighestReceived(increment protocol.ByteCount)
 }
 
 // A Session is a QUIC connection between two peers.
