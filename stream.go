@@ -452,5 +452,5 @@ func (s *stream) Setuint64(writeOffset uint64) {
 	s.writeOffset = protocol.ByteCount(writeOffset)
 }
 func (s *stream) IncrementHighestReceived(increment protocol.ByteCount) {
-	s.writeOffset = protocol.ByteCount(increment)
+	s.flowControlManager.IncrementHighestReceived(s.streamID, increment)
 }
