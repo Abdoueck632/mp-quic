@@ -150,8 +150,6 @@ func (s *stream) Read(p []byte) (int, error) {
 		if err != nil {
 			return bytesRead, err
 		}
-		// Trier les paquets par offset avant de les lire
-		s.frameQueue.SortByOffset()
 
 		m := utils.Min(len(p)-bytesRead, int(frame.DataLen())-s.readPosInFrame)
 
@@ -193,8 +191,6 @@ func (s *streamFrameSorter) SortByOffset() {
 		return s.queuedFrames[protocol.ByteCount(i)].Offset < s.queuedFrames[protocol.ByteCount(i)].Offset
 	})
 }
-
-/*
 func (s *stream) ReadWithOffset(p []byte) (int, error) {
 	s.mutex.Lock()
 	err := s.err
@@ -207,9 +203,6 @@ func (s *stream) ReadWithOffset(p []byte) (int, error) {
 	}
 
 	bytesRead := 0
-	expectedOffset := s.readOffset
-	var receivedFrames []*receivedFrame
-
 	for bytesRead < len(p) {
 		s.mutex.Lock()
 		frame := s.frameQueue.Head()
@@ -219,69 +212,79 @@ func (s *stream) ReadWithOffset(p []byte) (int, error) {
 			return bytesRead, err
 		}
 
-		receivedFrames = append(receivedFrames, &receivedFrame{
-			frame: frame,
-			index: len(receivedFrames),
-		})
+		var err error
+		for {
+			// Stop waiting on errors
+			if s.resetLocally.Get() || s.cancelled.Get() {
+				err = s.err
+				break
+			}
 
-		s.mutex.Unlock()
-	}
+			deadline := s.readDeadline
+			if !deadline.IsZero() && !time.Now().Before(deadline) {
+				err = errDeadline
+				break
+			}
 
-	sort.Slice(receivedFrames, func(i, j int) bool {
-		return receivedFrames[i].frame.Offset < receivedFrames[j].frame.Offset
-	})
+			if frame != nil {
+				s.readPosInFrame = int(s.readOffset - frame.Offset)
+				break
+			}
 
-	for _, receivedFrame := range receivedFrames {
-		frame := receivedFrame.frame
-		index := receivedFrame.index
-
-		if frame.Offset == expectedOffset {
-			// Le paquet a l'offset attendu, le traiter normalement
-			bytesToCopy := utils.Min(len(p)-bytesRead, int(frame.DataLen()))
-			copy(p[bytesRead:bytesRead+bytesToCopy], frame.Data)
-
-			// Mettre à jour l'offset attendu
-			expectedOffset += protocol.ByteCount(bytesToCopy)
-			bytesRead += bytesToCopy
-
-			// Retirer le paquet de la file d'attente
-			s.mutex.Lock()
-			s.frameQueue.queuedFrames = append(s.frameQueue.queuedFrames[:index], s.frameQueue.queuedFrames[index+1:]...)
 			s.mutex.Unlock()
+			if deadline.IsZero() {
+				<-s.readChan
+			} else {
+				select {
+				case <-s.readChan:
+				case <-time.After(deadline.Sub(time.Now())):
+				}
+			}
+			s.mutex.Lock()
+			frame = s.frameQueue.Head()
+		}
+		s.mutex.Unlock()
 
-			if frame.FinBit {
-				// Le dernier paquet a été reçu
+		if err != nil {
+			return bytesRead, err
+		}
+		// Trier les paquets par offset avant de les lire
+		s.frameQueue.SortByOffset()
+
+		m := utils.Min(len(p)-bytesRead, int(frame.DataLen())-s.readPosInFrame)
+
+		if bytesRead > len(p) {
+			return bytesRead, fmt.Errorf("BUG: bytesRead (%d) > len(p) (%d) in stream.Read", bytesRead, len(p))
+		}
+		if s.readPosInFrame > int(frame.DataLen()) {
+			return bytesRead, fmt.Errorf("BUG: readPosInFrame (%d) > frame.DataLen (%d) in stream.Read", s.readPosInFrame, frame.DataLen())
+		}
+		copy(p[bytesRead:], frame.Data[s.readPosInFrame:])
+
+		s.readPosInFrame += m
+		bytesRead += m
+		s.readOffset += protocol.ByteCount(m)
+
+		// when a RST_STREAM was received, the was already informed about the final byteOffset for this stream
+		if !s.resetRemotely.Get() {
+			s.flowControlManager.AddBytesRead(s.streamID, protocol.ByteCount(m))
+		}
+		s.onData() // so that a possible WINDOW_UPDATE is sent
+
+		if s.readPosInFrame >= int(frame.DataLen()) {
+			fin := frame.FinBit
+			s.mutex.Lock()
+			s.frameQueue.Pop()
+			s.mutex.Unlock()
+			if fin {
 				s.finishedReading.Set(true)
 				return bytesRead, io.EOF
 			}
-		} else if frame.Offset > expectedOffset {
-			// Le paquet a un offset plus avancé que l'offset attendu
-			// Attendre les paquets manquants
-			// Vous pouvez utiliser une boucle ou un mécanisme de temporisation pour attendre les paquets manquants
-
-			// OU
-
-			// Ajuster l'offset attendu pour traiter les paquets hors séquence
-			bytesToSkip := frame.Offset - expectedOffset
-			bytesRead += int(bytesToSkip)
-			expectedOffset = frame.Offset
-
-			// Retirer le paquet de la file d'attente
-			s.mutex.Lock()
-			s.frameQueue.frames = append(s.frameQueue.frames[:index], s.frameQueue.frames[index+1:]...)
-			s.mutex.Unlock()
-		} else {
-			// Le paquet a un offset plus petit que l'offset attendu
-			// Ignorer le paquet et le supprimer de la file d'attente
-			s.mutex.Lock()
-			s.frameQueue.frames = append(s.frameQueue.frames[:index], s.frameQueue.frames[index+1:]...)
-			s.mutex.Unlock()
 		}
 	}
 
 	return bytesRead, nil
 }
-*/
 
 func (s *stream) Write(p []byte) (int, error) {
 	s.mutex.Lock()
