@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"sort"
 	"sync"
 	"time"
 
@@ -58,6 +59,10 @@ type stream struct {
 
 	flowControlManager flowcontrol.FlowControlManager
 }
+type receivedFrame struct {
+	frame *wire.StreamFrame
+	index int
+}
 
 var _ Stream = &stream{}
 
@@ -88,7 +93,7 @@ func newStream(StreamID protocol.StreamID,
 }
 
 // Read implements io.Reader. It is not thread safe!
-func (s *stream) Read(p []byte) (int, error) {
+/*func (s *stream) Read(p []byte) (int, error) {
 	s.mutex.Lock()
 	err := s.err
 	s.mutex.Unlock()
@@ -175,6 +180,86 @@ func (s *stream) Read(p []byte) (int, error) {
 				s.finishedReading.Set(true)
 				return bytesRead, io.EOF
 			}
+		}
+	}
+
+	return bytesRead, nil
+}
+*/
+
+func (s *stream) Read(p []byte) (int, error) {
+	s.mutex.Lock()
+	err := s.err
+	s.mutex.Unlock()
+	if s.cancelled.Get() || s.resetLocally.Get() {
+		return 0, err
+	}
+	if s.finishedReading.Get() {
+		return 0, io.EOF
+	}
+
+	bytesRead := 0
+	expectedOffset := s.readOffset
+	var receivedFrames []*receivedFrame
+
+	for bytesRead < len(p) {
+		s.mutex.Lock()
+		frame := s.frameQueue.Head()
+		if frame == nil && bytesRead > 0 {
+			err = s.err
+			s.mutex.Unlock()
+			return bytesRead, err
+		}
+
+		receivedFrames = append(receivedFrames, &receivedFrame{
+			frame: frame,
+			index: len(receivedFrames),
+		})
+
+		s.mutex.Unlock()
+	}
+
+	sort.Slice(receivedFrames, func(i, j int) bool {
+		return receivedFrames[i].frame.Offset < receivedFrames[j].frame.Offset
+	})
+
+	for _, receivedFrame := range receivedFrames {
+		frame := receivedFrame.frame
+		index := receivedFrame.index
+
+		// Check if the frame offset matches the expected offset
+		if frame.Offset == expectedOffset {
+			// Process the frame
+			// ...
+
+			// Copy the frame data to the buffer
+			n := copy(p[bytesRead:], frame.Data)
+			bytesRead += n
+
+			// Update the expected offset based on the processed frame
+			expectedOffset += protocol.ByteCount(frame.DataLen())
+
+			// Release resources, if needed
+			// ...
+
+			// Check if the frame is the last frame
+			if frame.FinBit {
+				s.finishedReading.Set(true)
+				return bytesRead, io.EOF
+			}
+
+			// Remove the frame from the queue
+			s.mutex.Lock()
+			s.mutex.Unlock()
+		} else if frame.Offset < expectedOffset {
+			// Skip frames with offsets less than the expected offset
+			s.mutex.Lock()
+			s.frameQueue.Remove(uint64(index))
+			s.mutex.Unlock()
+		} else {
+			// Handle out-of-sequence frame
+			// Wait for missing frames or adjust the expected offset
+			// ...
 		}
 	}
 
