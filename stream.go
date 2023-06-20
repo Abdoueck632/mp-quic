@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net"
-	"sort"
 	"sync"
 	"time"
 
@@ -150,106 +149,6 @@ func (s *stream) Read(p []byte) (int, error) {
 		if err != nil {
 			return bytesRead, err
 		}
-
-		m := utils.Min(len(p)-bytesRead, int(frame.DataLen())-s.readPosInFrame)
-
-		if bytesRead > len(p) {
-			return bytesRead, fmt.Errorf("BUG: bytesRead (%d) > len(p) (%d) in stream.Read", bytesRead, len(p))
-		}
-		if s.readPosInFrame > int(frame.DataLen()) {
-			return bytesRead, fmt.Errorf("BUG: readPosInFrame (%d) > frame.DataLen (%d) in stream.Read", s.readPosInFrame, frame.DataLen())
-		}
-		copy(p[bytesRead:], frame.Data[s.readPosInFrame:])
-
-		s.readPosInFrame += m
-		bytesRead += m
-		s.readOffset += protocol.ByteCount(m)
-
-		// when a RST_STREAM was received, the was already informed about the final byteOffset for this stream
-		if !s.resetRemotely.Get() {
-			s.flowControlManager.AddBytesRead(s.streamID, protocol.ByteCount(m))
-		}
-		s.onData() // so that a possible WINDOW_UPDATE is sent
-
-		if s.readPosInFrame >= int(frame.DataLen()) {
-			fin := frame.FinBit
-			s.mutex.Lock()
-			s.frameQueue.Pop()
-			s.mutex.Unlock()
-			if fin {
-				s.finishedReading.Set(true)
-				return bytesRead, io.EOF
-			}
-		}
-	}
-
-	return bytesRead, nil
-}
-
-func (s *streamFrameSorter) SortByOffset() {
-	sort.Slice(s.queuedFrames, func(i, j int) bool {
-		return s.queuedFrames[protocol.ByteCount(i)].Offset < s.queuedFrames[protocol.ByteCount(i)].Offset
-	})
-}
-func (s *stream) ReadWithOffset(p []byte) (int, error) {
-	s.mutex.Lock()
-	err := s.err
-	s.mutex.Unlock()
-	if s.cancelled.Get() || s.resetLocally.Get() {
-		return 0, err
-	}
-	if s.finishedReading.Get() {
-		return 0, io.EOF
-	}
-
-	bytesRead := 0
-	for bytesRead < len(p) {
-		s.mutex.Lock()
-		frame := s.frameQueue.Head()
-		if frame == nil && bytesRead > 0 {
-			err = s.err
-			s.mutex.Unlock()
-			return bytesRead, err
-		}
-
-		var err error
-		for {
-			// Stop waiting on errors
-			if s.resetLocally.Get() || s.cancelled.Get() {
-				err = s.err
-				break
-			}
-
-			deadline := s.readDeadline
-			if !deadline.IsZero() && !time.Now().Before(deadline) {
-				err = errDeadline
-				break
-			}
-
-			if frame != nil {
-				s.readPosInFrame = int(s.readOffset - frame.Offset)
-				break
-			}
-
-			s.mutex.Unlock()
-			if deadline.IsZero() {
-				<-s.readChan
-			} else {
-				select {
-				case <-s.readChan:
-				case <-time.After(deadline.Sub(time.Now())):
-				}
-			}
-			s.mutex.Lock()
-			frame = s.frameQueue.Head()
-		}
-		s.mutex.Unlock()
-
-		if err != nil {
-			return bytesRead, err
-		}
-		// Trier les paquets par offset avant de les lire
-		s.frameQueue.SortByOffset()
 
 		m := utils.Min(len(p)-bytesRead, int(frame.DataLen())-s.readPosInFrame)
 
