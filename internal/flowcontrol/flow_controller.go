@@ -182,7 +182,7 @@ func (c *flowController) maybeAdjustWindowIncrement() {
 	timeSinceLastWindowUpdate := time.Since(c.lastWindowUpdateTime)
 
 	var maxRemoteRTT time.Duration
-	for _, remoteRTT := range c.remoteRTTs {
+	for _, remoteRTT := range(c.remoteRTTs) {
 		maxRemoteRTT = utils.MaxDuration(maxRemoteRTT, remoteRTT)
 	}
 
@@ -214,11 +214,7 @@ func (c *flowController) EnsureMinimumWindowIncrement(inc protocol.ByteCount) {
 		c.lastWindowUpdateTime = time.Time{} // disables autotuning for the next window update
 	}
 }
-func (c *flowController) IncrementReceiveWindow(receiveWindow protocol.ByteCount) {
 
-	c.receiveWindow = receiveWindow
-
-}
 func (c *flowController) CheckFlowControlViolation() bool {
 	return c.highestReceived > c.receiveWindow
 }

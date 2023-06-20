@@ -286,5 +286,5 @@ func (f *flowControlManager) getFlowController(streamID protocol.StreamID) (*flo
 	return streamFlowController, nil
 }
 func (f *flowControlManager) IncrementHighestReceived(streamID protocol.StreamID, incremente protocol.ByteCount) {
-	f.streamFlowController[streamID].IncrementReceiveWindow(incremente)
+	f.streamFlowController[streamID].IncrementHighestReceived(incremente)
 }
