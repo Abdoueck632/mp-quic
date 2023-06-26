@@ -122,7 +122,7 @@ func (s *stream) Read(p []byte) (int, error) {
 
 		var err error
 		for {
-			utils.Infof(" :)    3 \n")
+			utils.Infof(" :)    3 %+v\n", frame)
 			// Stop waiting on errors
 			if s.resetLocally.Get() || s.cancelled.Get() {
 				err = s.err
@@ -315,18 +315,23 @@ func (s *stream) sentFin() {
 
 // AddStreamFrame adds a new stream frame
 func (s *stream) AddStreamFrame(frame *wire.StreamFrame) error {
+	utils.Infof(" (AddStreamFrame)      1 : %+v \n", frame)
 	maxOffset := frame.Offset + frame.DataLen()
 	err := s.flowControlManager.UpdateHighestReceived(s.streamID, maxOffset)
+	utils.Infof(" (AddStreamFrame)      2 : %+v\n", maxOffset)
 	if err != nil {
+		utils.Infof(" (AddStreamFrame)      3 error  UpdateHighestReceived \n")
 		return err
 	}
-
+	utils.Infof(" (AddStreamFrame)      4 :\n")
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 	err = s.frameQueue.Push(frame)
 	if err != nil && err != errDuplicateStreamData {
+		utils.Infof(" (AddStreamFrame)      5 error push : %+v\n", err)
 		return err
 	}
+	utils.Infof(" (AddStreamFrame)      6 fin de la fonction\n")
 	s.signalRead()
 	return nil
 }
