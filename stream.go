@@ -96,7 +96,7 @@ func (s *stream) Read(p []byte) (int, error) {
 	s.mutex.Lock()
 	err := s.err
 	s.mutex.Unlock()
-	utils.Infof(" :)    1 \n")
+	utils.Infof(" :)    1 %+v \n", s.readPosInFrame)
 	if s.cancelled.Get() || s.resetLocally.Get() {
 		utils.Infof(" :)    return  1 \n")
 		return 0, err
@@ -327,6 +327,8 @@ func (s *stream) AddStreamFrame(frame *wire.StreamFrame) error {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 	err = s.frameQueue.Push(frame)
+
+	utils.Infof(" (AddStreamFrame)     4.1 Error Push :%+v\n", err)
 	if err != nil && err != errDuplicateStreamData {
 		utils.Infof(" (AddStreamFrame)      5 error push : %+v\n", err)
 		return err

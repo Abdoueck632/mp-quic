@@ -153,6 +153,7 @@ func (s *streamFrameSorter) Pop() *wire.StreamFrame {
 }
 
 func (s *streamFrameSorter) Head() *wire.StreamFrame {
+	utils.Infof(" ((Head)    %+v", s)
 	frame, ok := s.queuedFrames[s.readPosition]
 	if ok {
 		return frame
