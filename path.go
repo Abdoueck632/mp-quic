@@ -271,3 +271,6 @@ func (p *path) SetlastRcvdPacketNumber(lastsend uint64, lastRcvd uint64, packet 
 func (p *path) GetpacketNumberGenerator() *packetNumberGenerator {
 	return p.packetNumberGenerator
 }
+func (p *path) IncrementBytesInFlight(bytesInFlight protocol.ByteCount) {
+	p.sentPacketHandler.IncrementBytesInFlight(bytesInFlight)
+}

@@ -31,6 +31,8 @@ type SentPacketHandler interface {
 	GetStatistics() (uint64, uint64, uint64)
 	GetlastSentPacketNumber() (protocol.PacketNumber, protocol.PacketNumber, protocol.PacketNumber, uint64)
 	SetlastSentPacketNumber(lastsend uint64, largestReceive uint64, LargestAcked uint64, packet uint64)
+
+	IncrementBytesInFlight(bytesInFlight protocol.ByteCount)
 }
 
 // ReceivedPacketHandler handles ACKs needed to send for incoming packets

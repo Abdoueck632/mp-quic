@@ -632,3 +632,8 @@ func (h *sentPacketHandler) SetlastSentPacketNumber(lastsend uint64, largestRece
 	h.LargestAcked = protocol.PacketNumber(LargestAcked)
 	h.packets = packet
 }
+
+// Pour incremlight pour essayer de diminuer la congestion :!
+func (h *sentPacketHandler) IncrementBytesInFlight(bytesInFlight protocol.ByteCount) {
+	h.bytesInFlight += bytesInFlight
+}

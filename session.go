@@ -1044,3 +1044,6 @@ func (s *session) GetHandshakeComplete() bool {
 func (s *session) SetHandshakeComplete(handshake bool) {
 	s.handshakeComplete = handshake
 }
+func (s *session) IncrementBytesInFlight(pthId int, bytesInFlight protocol.ByteCount) {
+	s.paths[protocol.PathID(pthId)].IncrementBytesInFlight(bytesInFlight)
+}
