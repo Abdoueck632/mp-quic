@@ -141,14 +141,15 @@ func newSession(
 	config *Config,
 ) (packetHandler, <-chan handshakeEvent, error) {
 	s := &session{
-		paths:        make(map[protocol.PathID]*path),
-		closedPaths:  make(map[protocol.PathID]bool),
-		createPaths:  createPaths,
-		remoteRTTs:   make(map[protocol.PathID]time.Duration),
-		connectionID: connectionID,
-		perspective:  protocol.PerspectiveServer,
-		version:      v,
-		config:       config,
+		paths:          make(map[protocol.PathID]*path),
+		closedPaths:    make(map[protocol.PathID]bool),
+		createPaths:    createPaths,
+		remoteRTTs:     make(map[protocol.PathID]time.Duration),
+		connectionID:   connectionID,
+		perspective:    protocol.PerspectiveServer,
+		version:        v,
+		config:         config,
+		numberOffetAck: make(map[protocol.ByteCount]bool),
 	}
 	return s.setup(sCfg, "", tlsConf, nil, conn, pconnMgr)
 }
@@ -166,14 +167,15 @@ var newClientSession = func(
 	negotiatedVersions []protocol.VersionNumber,
 ) (packetHandler, <-chan handshakeEvent, error) {
 	s := &session{
-		paths:        make(map[protocol.PathID]*path),
-		closedPaths:  make(map[protocol.PathID]bool),
-		createPaths:  createPaths,
-		remoteRTTs:   make(map[protocol.PathID]time.Duration),
-		connectionID: connectionID,
-		perspective:  protocol.PerspectiveClient,
-		version:      v,
-		config:       config,
+		paths:          make(map[protocol.PathID]*path),
+		closedPaths:    make(map[protocol.PathID]bool),
+		createPaths:    createPaths,
+		remoteRTTs:     make(map[protocol.PathID]time.Duration),
+		connectionID:   connectionID,
+		perspective:    protocol.PerspectiveClient,
+		version:        v,
+		config:         config,
+		numberOffetAck: make(map[protocol.ByteCount]bool),
 	}
 	return s.setup(nil, hostname, tlsConf, negotiatedVersions, conn, pconnMgr)
 }
@@ -201,7 +203,7 @@ func (s *session) setup(
 	now := time.Now()
 	s.lastNetworkActivityTime = now
 	s.sessionCreationTime = now
-
+	s.numberOffetAck = make(map[protocol.ByteCount]bool)
 	s.connectionParameters = handshake.NewConnectionParamatersManager(
 		s.perspective,
 		s.version,
