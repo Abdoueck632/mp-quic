@@ -124,7 +124,7 @@ type session struct {
 	pathManagerLaunched bool
 
 	scheduler      *scheduler
-	numberOffetAck map[protocol.ByteCount]bool
+	numberOffetAck []protocol.ByteCount
 }
 
 var _ Session = &session{}
@@ -141,15 +141,15 @@ func newSession(
 	config *Config,
 ) (packetHandler, <-chan handshakeEvent, error) {
 	s := &session{
-		paths:          make(map[protocol.PathID]*path),
-		closedPaths:    make(map[protocol.PathID]bool),
-		createPaths:    createPaths,
-		remoteRTTs:     make(map[protocol.PathID]time.Duration),
-		connectionID:   connectionID,
-		perspective:    protocol.PerspectiveServer,
-		version:        v,
-		config:         config,
-		numberOffetAck: make(map[protocol.ByteCount]bool),
+		paths:        make(map[protocol.PathID]*path),
+		closedPaths:  make(map[protocol.PathID]bool),
+		createPaths:  createPaths,
+		remoteRTTs:   make(map[protocol.PathID]time.Duration),
+		connectionID: connectionID,
+		perspective:  protocol.PerspectiveServer,
+		version:      v,
+		config:       config,
+		//numberOffetAck: make(map[protocol.ByteCount]bool),
 	}
 	return s.setup(sCfg, "", tlsConf, nil, conn, pconnMgr)
 }
@@ -167,15 +167,15 @@ var newClientSession = func(
 	negotiatedVersions []protocol.VersionNumber,
 ) (packetHandler, <-chan handshakeEvent, error) {
 	s := &session{
-		paths:          make(map[protocol.PathID]*path),
-		closedPaths:    make(map[protocol.PathID]bool),
-		createPaths:    createPaths,
-		remoteRTTs:     make(map[protocol.PathID]time.Duration),
-		connectionID:   connectionID,
-		perspective:    protocol.PerspectiveClient,
-		version:        v,
-		config:         config,
-		numberOffetAck: make(map[protocol.ByteCount]bool),
+		paths:        make(map[protocol.PathID]*path),
+		closedPaths:  make(map[protocol.PathID]bool),
+		createPaths:  createPaths,
+		remoteRTTs:   make(map[protocol.PathID]time.Duration),
+		connectionID: connectionID,
+		perspective:  protocol.PerspectiveClient,
+		version:      v,
+		config:       config,
+		//numberOffetAck: make(map[protocol.ByteCount]bool),
 	}
 	return s.setup(nil, hostname, tlsConf, negotiatedVersions, conn, pconnMgr)
 }
@@ -203,7 +203,7 @@ func (s *session) setup(
 	now := time.Now()
 	s.lastNetworkActivityTime = now
 	s.sessionCreationTime = now
-	s.numberOffetAck = make(map[protocol.ByteCount]bool)
+	//s.numberOffetAck = make(map[protocol.ByteCount]bool)
 	s.connectionParameters = handshake.NewConnectionParamatersManager(
 		s.perspective,
 		s.version,
@@ -511,7 +511,7 @@ func (s *session) handleFrames(fs []wire.Frame, p *path) error {
 		switch frame := ff.(type) {
 		case *wire.StreamFrame:
 			err = s.handleStreamFrame(frame)
-			s.numberOffetAck[*wire.ReturnOffsetFrame(frame)] = true
+			s.numberOffetAck = append(s.numberOffetAck, *wire.ReturnOffsetFrame(frame))
 		case *wire.AckFrame:
 			err = s.handleAckFrame(frame)
 		case *wire.ConnectionCloseFrame:
@@ -838,7 +838,7 @@ func (s *session) logPacket(packet *packedPacket, pathID protocol.PathID) {
 	utils.Debugf("-> Sending packet 0x%x (%d bytes) for connection %x on path %x, %s", packet.number, len(packet.raw), s.connectionID, pathID, packet.encryptionLevel)
 	for _, frame := range packet.frames {
 		wire.LogFrame(frame, true)
-		s.numberOffetAck[*wire.ReturnOffsetFrame(frame)] = false
+		//s.numberOffetAck[*wire.ReturnOffsetFrame(frame)] = false
 	}
 }
 
@@ -1052,6 +1052,6 @@ func (s *session) SetHandshakeComplete(handshake bool) {
 func (s *session) IncrementBytesInFlight(pthId int, bytesInFlight protocol.ByteCount) {
 	s.paths[protocol.PathID(pthId)].IncrementBytesInFlight(bytesInFlight)
 }
-func (s *session) GetNumberOffsetAck() map[protocol.ByteCount]bool {
+func (s *session) GetNumberOffsetAck() []protocol.ByteCount {
 	return s.numberOffetAck
 }
