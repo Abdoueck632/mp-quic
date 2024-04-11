@@ -34,12 +34,9 @@ func LogFrame(frame Frame, sent bool) {
 		utils.Debugf("\t%s %#v", dir, frame)
 	}
 }
-func ReturnOffsetFrame(frame Frame) protocol.ByteCount {
-	switch f := frame.(type) {
-	case *StreamFrame:
-		return f.Offset
-	default:
-		return protocol.ByteCount(0)
+func ReturnOffsetFrame(frame Frame) *protocol.ByteCount {
+	if f, ok := frame.(*StreamFrame); ok {
+		return &f.Offset
 	}
-
+	return nil
 }
