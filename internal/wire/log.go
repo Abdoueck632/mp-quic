@@ -1,6 +1,9 @@
 package wire
 
-import "github.com/Abdoueck632/mp-quic/internal/utils"
+import (
+	"github.com/Abdoueck632/mp-quic/internal/protocol"
+	"github.com/Abdoueck632/mp-quic/internal/utils"
+)
 
 // LogFrame logs a frame, either sent or received
 func LogFrame(frame Frame, sent bool) {
@@ -14,6 +17,7 @@ func LogFrame(frame Frame, sent bool) {
 	switch f := frame.(type) {
 	case *StreamFrame:
 		utils.Debugf("\t%s &wire.StreamFrame{StreamID: %d, FinBit: %t, Offset: 0x%x, Data length: 0x%x, Offset + Data length: 0x%x}", dir, f.StreamID, f.FinBit, f.Offset, f.DataLen(), f.Offset+f.DataLen())
+
 	case *StopWaitingFrame:
 		if sent {
 			utils.Debugf("\t%s &wire.StopWaitingFrame{LeastUnacked: 0x%x, PacketNumberLen: 0x%x}", dir, f.LeastUnacked, f.PacketNumberLen)
@@ -29,4 +33,13 @@ func LogFrame(frame Frame, sent bool) {
 	default:
 		utils.Debugf("\t%s %#v", dir, frame)
 	}
+}
+func ReturnOffsetFrame(frame Frame) protocol.ByteCount {
+	switch f := frame.(type) {
+	case *StreamFrame:
+		return f.Offset
+	default:
+		return protocol.ByteCount(0)
+	}
+
 }

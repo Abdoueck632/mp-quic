@@ -123,7 +123,8 @@ type session struct {
 	pathManager         *pathManager
 	pathManagerLaunched bool
 
-	scheduler *scheduler
+	scheduler      *scheduler
+	numberOffetAck map[protocol.ByteCount]bool
 }
 
 var _ Session = &session{}
@@ -508,6 +509,7 @@ func (s *session) handleFrames(fs []wire.Frame, p *path) error {
 		switch frame := ff.(type) {
 		case *wire.StreamFrame:
 			err = s.handleStreamFrame(frame)
+			s.numberOffetAck[wire.ReturnOffsetFrame(frame)] = true
 		case *wire.AckFrame:
 			err = s.handleAckFrame(frame)
 		case *wire.ConnectionCloseFrame:
@@ -834,6 +836,7 @@ func (s *session) logPacket(packet *packedPacket, pathID protocol.PathID) {
 	utils.Debugf("-> Sending packet 0x%x (%d bytes) for connection %x on path %x, %s", packet.number, len(packet.raw), s.connectionID, pathID, packet.encryptionLevel)
 	for _, frame := range packet.frames {
 		wire.LogFrame(frame, true)
+		s.numberOffetAck[wire.ReturnOffsetFrame(frame)] = false
 	}
 }
 
@@ -1046,4 +1049,7 @@ func (s *session) SetHandshakeComplete(handshake bool) {
 }
 func (s *session) IncrementBytesInFlight(pthId int, bytesInFlight protocol.ByteCount) {
 	s.paths[protocol.PathID(pthId)].IncrementBytesInFlight(bytesInFlight)
+}
+func (s *session) GetNumberOffsetAck() map[protocol.ByteCount]bool {
+	return s.numberOffetAck
 }
