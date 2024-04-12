@@ -17,7 +17,7 @@ func LogFrame(frame Frame, sent bool) {
 	switch f := frame.(type) {
 	case *StreamFrame:
 		utils.Debugf("\t%s &wire.StreamFrame{StreamID: %d, FinBit: %t, Offset: 0x%x, Data length: 0x%x, Offset + Data length: 0x%x}", dir, f.StreamID, f.FinBit, f.Offset, f.DataLen(), f.Offset+f.DataLen())
-
+		utils.Infof("Offest %t ", f.Offset)
 	case *StopWaitingFrame:
 		if sent {
 			utils.Debugf("\t%s &wire.StopWaitingFrame{LeastUnacked: 0x%x, PacketNumberLen: 0x%x}", dir, f.LeastUnacked, f.PacketNumberLen)

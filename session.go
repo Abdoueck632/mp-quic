@@ -511,7 +511,7 @@ func (s *session) handleFrames(fs []wire.Frame, p *path) error {
 		switch frame := ff.(type) {
 		case *wire.StreamFrame:
 			err = s.handleStreamFrame(frame)
-			utils.Infof("%s ", *wire.ReturnOffsetFrame(frame))
+
 		case *wire.AckFrame:
 			err = s.handleAckFrame(frame)
 		case *wire.ConnectionCloseFrame:
