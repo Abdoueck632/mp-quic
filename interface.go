@@ -113,7 +113,7 @@ type Session interface {
 	IncrementBytesInFlight(pthId int, bytesInFlight protocol.ByteCount)
 
 	//Pour recuperer les offsets pour les acks
-	GetNumberOffsetAck() []protocol.ByteCount
+	GetAckPaquet() []ackStruct
 }
 
 // A NonFWSession is a QUIC connection between two peers half-way through the handshake.

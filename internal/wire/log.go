@@ -38,9 +38,20 @@ func LogFrame(frame Frame, sent bool) {
 func ReturnOffsetFrame(frame Frame) *protocol.ByteCount {
 	switch f := frame.(type) {
 	case *StreamFrame:
-		utils.Infof("Offest sending %x ", f.Offset)
-	case *AckFrame:
-		utils.Infof("AckFrame reading %t ", f.PathID)
+		return &f.Offset
+	default:
+		return nil
 	}
-	return nil
+
+}
+func GetTypeFrame(frame Frame) int {
+	switch frame.(type) {
+	case *StreamFrame:
+		return 1
+
+	case *AckFrame:
+		return 2
+	}
+	return -1
+
 }

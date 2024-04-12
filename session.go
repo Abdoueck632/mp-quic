@@ -50,6 +50,11 @@ type closeError struct {
 	err    error
 	remote bool
 }
+type ackStruct struct {
+	offset       protocol.ByteCount
+	packetNumber protocol.PacketNumber
+	ack          bool
+}
 
 // A Session is a QUIC session
 type session struct {
@@ -123,8 +128,8 @@ type session struct {
 	pathManager         *pathManager
 	pathManagerLaunched bool
 
-	scheduler      *scheduler
-	numberOffetAck []protocol.ByteCount
+	scheduler *scheduler
+	ackPacket []ackStruct
 }
 
 var _ Session = &session{}
@@ -503,11 +508,19 @@ func (s *session) handlePacketImpl(p *receivedPacket) error {
 	}
 	return pth.handlePacketImpl(p)
 }
-
+func trouverIndice(ack []ackStruct, paquetNumber protocol.PacketNumber) int {
+	for i := 0; i < len(ack); i++ {
+		if ack[i].packetNumber == paquetNumber {
+			return i // Retourne l'indice si la personne avec le nom "Abdou" est trouvée
+		}
+	}
+	return -1 // Retourne -1 si la personne avec le nom "Abdou" n'est pas trouvée
+}
 func (s *session) handleFrames(fs []wire.Frame, p *path) error {
 	for _, ff := range fs {
 		var err error
 		wire.LogFrame(ff, false)
+
 		switch frame := ff.(type) {
 		case *wire.StreamFrame:
 			err = s.handleStreamFrame(frame)
@@ -836,10 +849,22 @@ func (s *session) logPacket(packet *packedPacket, pathID protocol.PathID) {
 		return
 	}
 	utils.Debugf("-> Sending packet 0x%x (%d bytes) for connection %x on path %x, %s", packet.number, len(packet.raw), s.connectionID, pathID, packet.encryptionLevel)
+
+	var ack ackStruct
+
 	for _, frame := range packet.frames {
+		if wire.GetTypeFrame(frame) == 1 {
+			ack = ackStruct{
+				packetNumber: packet.number,
+				offset:       *wire.ReturnOffsetFrame(frame),
+				ack:          false,
+			}
+		}
 		wire.LogFrame(frame, true)
 		//s.numberOffetAck[*wire.ReturnOffsetFrame(frame)] = false
 	}
+	s.ackPacket = append(s.ackPacket, ack)
+
 }
 
 // GetOrOpenStream either returns an existing stream, a newly opened stream, or nil if a stream with the provided ID is already closed.
@@ -1052,6 +1077,6 @@ func (s *session) SetHandshakeComplete(handshake bool) {
 func (s *session) IncrementBytesInFlight(pthId int, bytesInFlight protocol.ByteCount) {
 	s.paths[protocol.PathID(pthId)].IncrementBytesInFlight(bytesInFlight)
 }
-func (s *session) GetNumberOffsetAck() []protocol.ByteCount {
-	return s.numberOffetAck
+func (s *session) GetAckPaquet() []ackStruct {
+	return s.ackPacket
 }
