@@ -234,9 +234,9 @@ func (p *path) handlePacketImpl(pkt *receivedPacket) error {
 	}
 	for _, ff := range packet.frames {
 		if wire.GetTypeFrame(ff) == 2 {
-			indice := trouverIndice(p.sess.ackPacket, hdr.PacketNumber)
+			indice := trouverIndice(p.sess.AckPacket, hdr.PacketNumber)
 			if indice != -1 {
-				p.sess.ackPacket[indice].ack = true
+				p.sess.AckPacket[indice].Ack = true
 			}
 
 		}

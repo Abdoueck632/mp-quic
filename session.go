@@ -50,10 +50,10 @@ type closeError struct {
 	err    error
 	remote bool
 }
-type ackStruct struct {
-	offset       protocol.ByteCount
-	packetNumber protocol.PacketNumber
-	ack          bool
+type AckStruct struct {
+	Offset       protocol.ByteCount
+	PacketNumber protocol.PacketNumber
+	Ack          bool
 }
 
 // A Session is a QUIC session
@@ -129,7 +129,7 @@ type session struct {
 	pathManagerLaunched bool
 
 	scheduler *scheduler
-	ackPacket []ackStruct
+	AckPacket []AckStruct
 }
 
 var _ Session = &session{}
@@ -508,9 +508,9 @@ func (s *session) handlePacketImpl(p *receivedPacket) error {
 	}
 	return pth.handlePacketImpl(p)
 }
-func trouverIndice(ack []ackStruct, paquetNumber protocol.PacketNumber) int {
+func trouverIndice(ack []AckStruct, paquetNumber protocol.PacketNumber) int {
 	for i := 0; i < len(ack); i++ {
-		if ack[i].packetNumber == paquetNumber {
+		if ack[i].PacketNumber == paquetNumber {
 			return i // Retourne l'indice si la personne avec le nom "Abdou" est trouvée
 		}
 	}
@@ -850,20 +850,20 @@ func (s *session) logPacket(packet *packedPacket, pathID protocol.PathID) {
 	}
 	utils.Debugf("-> Sending packet 0x%x (%d bytes) for connection %x on path %x, %s", packet.number, len(packet.raw), s.connectionID, pathID, packet.encryptionLevel)
 
-	var ack ackStruct
+	var ack AckStruct
 
 	for _, frame := range packet.frames {
 		if wire.GetTypeFrame(frame) == 1 {
-			ack = ackStruct{
-				packetNumber: packet.number,
-				offset:       *wire.ReturnOffsetFrame(frame),
-				ack:          false,
+			ack = AckStruct{
+				PacketNumber: packet.number,
+				Offset:       *wire.ReturnOffsetFrame(frame),
+				Ack:          false,
 			}
 		}
 		wire.LogFrame(frame, true)
 		//s.numberOffetAck[*wire.ReturnOffsetFrame(frame)] = false
 	}
-	s.ackPacket = append(s.ackPacket, ack)
+	s.AckPacket = append(s.AckPacket, ack)
 
 }
 
@@ -1077,6 +1077,6 @@ func (s *session) SetHandshakeComplete(handshake bool) {
 func (s *session) IncrementBytesInFlight(pthId int, bytesInFlight protocol.ByteCount) {
 	s.paths[protocol.PathID(pthId)].IncrementBytesInFlight(bytesInFlight)
 }
-func (s *session) GetAckPaquet() []ackStruct {
-	return s.ackPacket
+func (s *session) GetAckPaquet() []AckStruct {
+	return s.AckPacket
 }
