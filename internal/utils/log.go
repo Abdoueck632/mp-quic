@@ -19,7 +19,7 @@ const (
 	LogLevelNothing LogLevel = iota
 
 	// LogLevelError enables err logs
-	LogLevelError = LogLevelNothing
+	LogLevelError //= LogLevelNothing
 	// LogLevelInfo enables info logs (e.g. packets)
 	LogLevelInfo //= LogLevelNothing
 	// LogLevelDebug enables debug logs (e.g. packet contents)
