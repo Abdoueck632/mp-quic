@@ -62,6 +62,7 @@ type Stream interface {
 	IncrementReceiveWindow(increment protocol.ByteCount)
 	CancelRead()
 	CancelWrite()
+	Cancel(err error)
 }
 
 // A Session is a QUIC connection between two peers.
