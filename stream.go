@@ -491,3 +491,8 @@ func (s *stream) CancelRead() {
 	// Marquer le stream comme terminé
 	s.finishedReading.Set(true)
 }
+func (s *stream) CancelWrite() {
+	s.ctxCancel()
+	// Marquer le stream comme terminé
+	s.finishedWriting.Set(true)
+}
