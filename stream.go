@@ -486,3 +486,8 @@ func (s *stream) Setuint64(writeOffset uint64) {
 func (s *stream) IncrementReceiveWindow(increment protocol.ByteCount) {
 	s.flowControlManager.IncrementReceiveWindow(s.streamID, increment)
 }
+func (s *stream) CancelRead() {
+	s.ctxCancel()
+	// Marquer le stream comme terminé
+	s.finishedReading.Set(true)
+}
