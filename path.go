@@ -237,7 +237,7 @@ func (p *path) handlePacketImpl(pkt *receivedPacket) error {
 			indice := trouverIndice(p.sess.AckPacket, hdr.PacketNumber)
 			if indice != -1 {
 				p.sess.AckPacket[indice].Ack = true
-				utils.Infof("->  Packet émis  %+v ", p.sess.AckPacket[indice])
+				utils.Infof("->  Packet ack recu  %+v ", p.sess.AckPacket[indice])
 			}
 
 		}
