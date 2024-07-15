@@ -864,7 +864,7 @@ func (s *session) logPacket(packet *packedPacket, pathID protocol.PathID) {
 		//s.numberOffetAck[*wire.ReturnOffsetFrame(frame)] = false
 	}
 	s.AckPacket = append(s.AckPacket, ack)
-	utils.Infof("->  Packet  %+v ", ack)
+	utils.Infof("->  Packet émis  %+v ", ack)
 
 }
 
